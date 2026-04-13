@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voluntariado - Fundación LinkUp</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link th:href="@{/css/voluntariado.css}" rel="stylesheet">
+  
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo.png" alt="Fundación LinkUp"></a>
+            </div>
+            <nav>
+                <a href="/">Inicio</a>
+                <a href="about.html">Sobre Nosotros</a>
+                <a href="projects.html">Proyectos</a>
+                <a href="contact.html">Contacto</a>
+                <a href="volunteer.html" >Voluntariado</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="volunteer-hero">
+        <div class="container">
+            <h1>Únete Como Voluntario</h1>
+            <p>Haz una diferencia en la vida de otros. ¡Descubre cómo puedes ayudar hoy mismo!</p>
+        </div>
+    </section>
+
+    <section class="volunteer-info">
+        <div class="container">
+            <h2>¿Por Qué Ser Voluntario?</h2>
+            <p>Al convertirte en voluntario, no solo ayudas a mejorar la vida de quienes más lo necesitan, sino que también adquieres nuevas habilidades y experiencias que te enriquecen personal y profesionalmente.</p>
+            <div class="benefits">
+                <div class="benefit">
+                    <img src="images/benefit-1.png" alt="Beneficio 1">
+                    <h3>Crecimiento Personal</h3>
+                    <p>Desarrolla habilidades interpersonales y adquiere nuevas perspectivas.</p>
+                </div>
+                <div class="benefit">
+                    <img src="images/benefit-2.png" alt="Beneficio 2">
+                    <h3>Impacto Positivo</h3>
+                    <p>Contribuye directamente al bienestar de tu comunidad y más allá.</p>
+                </div>
+                <div class="benefit">
+                    <img src="images/benefit-3.png" alt="Beneficio 3">
+                    <h3>Red de Contactos</h3>
+                    <p>Conecta con personas que comparten tus valores y objetivos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="volunteer-form">
+        <div class="container">
+            <h2>Formulario de Voluntariado</h2>
+            <form id="volunteer-form" action="#" method="post">
+                <div class="form-group">
+                    <label for="volunteer-name">Nombre Completo:</label>
+                    <input type="text" id="volunteer-name" name="volunteer-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteer-email">Correo Electrónico:</label>
+                    <input type="email" id="volunteer-email" name="volunteer-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteer-phone">Teléfono:</label>
+                    <input type="tel" id="volunteer-phone" name="volunteer-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="volunteer-availability">Disponibilidad:</label>
+                    <select id="volunteer-availability" name="volunteer-availability">
+                        <option value="fines-semana">Fines de Semana</option>
+                        <option value="tiempo-completo">Tiempo Completo</option>
+                        <option value="medio-tiempo">Medio Tiempo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="volunteer-interests">Intereses Específicos:</label>
+                    <textarea id="volunteer-interests" name="volunteer-interests" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Enviar Solicitud</button>
+            </form><br>
+            <a class="aref" href="thank-you">Ver mi Solicitud</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Fundación LinkUp. Todos los derechos reservados.</p>
+            <div class="social-icons">
+                <a href="#"><img src="images/facebook-icon.png" alt="Facebook"></a>
+                <a href="#"><img src="images/twitter-icon.png" alt="Twitter"></a>
+                <a href="#"><img src="images/instagram-icon.png" alt="Instagram"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/voluntariado.js}"></script>
+
+</body>
+</html>

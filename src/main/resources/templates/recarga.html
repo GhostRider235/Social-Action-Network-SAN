@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Recargar saldo</title>
+  <link rel="stylesheet" th:href="@{/css/recarga.css}">
+</head>
+<body>
+
+<div class="container">
+  <h2>Recargar Saldo</h2>
+
+  <form th:action="@{/recarga/enviar}" method="post" enctype="multipart/form-data">
+    
+    <div class="form-group">
+      <label for="monto">Monto a recargar</label>
+      <input type="text" name="monto" id="monto" placeholder="Ingrese el monto" required>
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion">Descripción</label>
+      <textarea name="descripcion" id="descripcion" rows="3" placeholder="Opcional"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="comprobante">Subir comprobante (PDF)</label>
+      <input type="file" name="comprobantePdf" id="comprobantePdf" accept="application/pdf">
+    </div>
+
+    <button type="submit" class="btn-primary">Enviar recarga</button>
+
+    <!-- 🔹 Botones de navegación -->
+    <div class="button-group">
+      <a th:href="@{/}" class="btn-secondary">Volver al inicio</a>
+      <a th:href="@{/proyectos/todos}" class="btn-secondary">Ver proyectos</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  const montoInput = document.getElementById('monto');
+
+  montoInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    value = new Intl.NumberFormat('es-CO').format(value);
+    e.target.value = value;
+  });
+
+  document.querySelector('form').addEventListener('submit', function() {
+    const montoSinFormato = montoInput.value.replace(/\D/g, '');
+    montoInput.value = montoSinFormato;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donaciones</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link th:href="@{/css/admin_dashboard.css}" rel="stylesheet" />
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <div class="sidebar-links">
+      <a th:href="@{/admin_dashboard}" class="active">
+        <i class='bx bx-home'></i><span>Inicio</span>
+      </a>
+      <a th:href="@{/admin/recargas/pendientes}">
+        <i class='bx bx-credit-card'></i><span>Recargas Pendientes</span>
+      </a>
+      <a th:href="@{/admin/fundaciones/pendientes}">
+        <i class='bx bx-building-house'></i><span>Fundaciones Pendientes</span>
+      </a>
+      
+      <a th:href="@{/admin/proyectos}">
+        <i class='bx bx-briefcase'></i><span>Proyectos</span>
+      </a>
+      <a th:href="@{/admin/voluntarios}">
+        <i class='bx bx-group'></i><span>Voluntarios</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <a th:href="@{/logout}" class="logout-btn">
+        <i class='bx bx-log-out'></i><span>Cerrar sesión</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="content-header">
+      <h2>📊 Listado de Donaciones</h2>
+    </div>
+    <!-- 🔹 Botón para volver al dashboard -->
+  <div class="return-btn-container">
+    <a th:href="@{/admin_dashboard}" class="return-btn">
+      <i class='bx bx-arrow-back'></i> Volver al Dashboard
+    </a>
+  </div>
+
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Fundación</th>
+            <th>Proyecto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="donacion : ${donaciones}">
+            <td th:text="${donacion.id}"></td>
+
+            <!-- Usuario -->
+            <td th:text="${donacion.usuario != null ? donacion.usuario.nombre : donacion.nombreUsuario}">Usuario</td>
+
+            <!-- Fundación -->
+            <td th:text="${donacion.fundacion != null ? donacion.fundacion.nombre : donacion.nombreFundacion}">Fundación</td>
+
+            <!-- Proyecto -->
+            <td th:text="${donacion.proyecto != null ? donacion.proyecto.nombre : donacion.nombreProyecto}">Proyecto</td>
+
+            <td th:text="${donacion.monto} + ' $'"></td>
+            <td th:text="${#dates.format(donacion.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+
+            <td>
+              <span class="estado"
+                    th:classappend="${donacion.estado}">
+                <span th:text="${donacion.estado}"></span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

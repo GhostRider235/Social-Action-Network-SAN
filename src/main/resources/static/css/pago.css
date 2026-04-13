@@ -1,0 +1,108 @@
+
+        
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+
+.navbar {
+    background-color: #002f6c;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.navbar ul {
+    list-style-type: none;
+}
+
+.navbar li {
+    display: inline;
+    margin: 0 15px;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Container Styles */
+.container {
+    text-align: center;
+    margin: 30px auto;
+    background-color: #e6e6e6;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+}
+
+.balance h2 {
+    color: #002f6c;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.action-button {
+    background-color: white;
+    border: 2px solid #dcdcdc;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+/* Form Container Styles */
+.form-container {
+    margin: 30px auto;
+    background-color: #e6e6e6;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+}
+
+.form-container h2 {
+    color: #002f6c;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+input {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    margin-top: 20px;
+    background-color: #002f6c;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

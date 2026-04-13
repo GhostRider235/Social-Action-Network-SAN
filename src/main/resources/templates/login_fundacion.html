@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Fundación</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/login_fundacion.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container-form">
+    <form th:action="@{/fundacion/login}" method="post" class="formulario">
+        <h2 class="login-title">Iniciar sesión como Fundación</h2>
+
+        <div class="input-group">
+            <i class='bx bx-envelope input-icon'></i>
+            <input class="enter" type="email" name="correo" placeholder="Correo de la fundación" required>
+        </div>
+
+        <div class="input-group">
+            <i class='bx bx-lock-alt input-icon'></i>
+            <input class="enter" type="password" name="contrasena" placeholder="Contraseña" required>
+        </div>
+
+        <!-- 🔹 Aquí se muestra el mensaje de error -->
+        <p th:if="${error}" th:text="${error}" class="error-message"></p>
+
+        <button type="submit" class="login-btn">Iniciar sesión</button>
+
+        <!-- Enlace para registrar nueva fundación -->
+        <a th:href="@{/fundacion/register}" class="register-link">¿No tienes cuenta? Registra tu fundación aquí</a>
+    </form>
+</div>
+</body>
+</html>

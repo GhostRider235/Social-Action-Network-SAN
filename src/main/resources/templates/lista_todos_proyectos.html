@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Proyectos</title>
+
+  <link rel="stylesheet" th:href="@{/css/lista_todos_proyectos.css}">
+  <script th:src="@{/js/lista_todos_proyectos.js}" defer></script>
+</head>
+<body>
+
+<header>
+  <div class="container header-content">
+    <div class="logo">
+      <a th:href="@{/index}">
+        <img th:src="@{/css/logo.jpeg}" alt="Logo" style="height:50px;">
+      </a>
+    </div>
+    <nav>
+      <a th:href="@{/index}">Inicio</a>
+      
+    </nav>
+  </div>
+</header>
+
+<section class="proyectos-container">
+  <h1>Lista de Proyectos</h1>
+
+  <!-- 🔍 Barra de búsqueda -->
+  <div class="search-bar">
+    <form th:action="@{/proyectos/todos}" method="get">
+      <input type="text" name="nombre" th:value="${nombre}" placeholder="Buscar proyecto por nombre...">
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+
+  <!-- 📋 Lista de proyectos -->
+  <div class="projects-grid">
+    <div class="no-proyectos" th:if="${proyectos.isEmpty()}">
+      <p>No se encontraron proyectos.</p>
+    </div>
+
+    <!-- 🧩 Tarjeta individual -->
+    <div class="project-card"
+         th:each="proyecto : ${proyectos}"
+         th:attr="data-proyecto-id=${proyecto.id}, data-fundacion-id=${proyecto.fundacionId}"
+         th:style="|background-image: url('${fundacionIdALogo[proyecto.fundacionId]}');|">
+
+          <!-- 🌑 Capa oscura sobre el logo -->
+  <div class="overlay"></div>
+
+      <!-- 🏷️ Nombre de la fundación -->
+      <div class="fundacion-nombre" th:text="${fundacionIdANombre[proyecto.fundacionId]}">
+        Nombre Fundación
+      </div>
+
+      <!-- Contenido del proyecto -->
+      <div class="project-content">
+        <h3 th:text="${proyecto.nombre}">Nombre del Proyecto</h3>
+        <p th:text="${proyecto.descripcion}">Descripción del Proyecto</p>
+
+        <!-- ⚙️ Botones -->
+        <div class="botones">
+  <div class="fila-superior">
+    <button th:if="${proyecto.recibirDonaciones}"
+            class="donar-btn"
+            onclick="abrirModal('donar', this)">
+      💰 Donar
+    </button>
+
+    <button class="postular-btn"
+            onclick="abrirModal('voluntario', this)">
+      🤝 Postularse
+    </button>
+  </div>
+
+  <a th:if="${proyecto.recibirDonaciones}"
+     th:href="@{/recarga}"
+     class="recargar-btn">
+    💳 Recargar saldo
+  </a>
+
+  <p th:if="${!proyecto.recibirDonaciones}"
+     class="mensaje-no-donaciones">
+    ❌ Este proyecto no acepta donaciones actualmente.
+  </p>
+</div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <a th:href="@{/index}" class="back-button">⬅ Volver al inicio</a>
+</section>
+
+<!-- 🪟 Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="cerrarModal()">&times;</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Foundation Action Network | Todos los derechos reservados</p>
+</footer>
+<script>
+  
+</script>
+</body>
+</html>

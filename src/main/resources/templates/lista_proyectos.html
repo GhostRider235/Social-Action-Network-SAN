@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Proyectos</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS personalizado -->
+    <link th:href="@{/css/fundacion_dashboard.css}" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+
+    <h1 class="mb-4 text-center">Mis Proyectos</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Recorremos los proyectos -->
+        <div class="col" th:each="proyecto : ${proyectos}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${proyecto.nombre}">Nombre del proyecto</h5>
+                    <p class="card-text" th:text="${proyecto.descripcion}">Descripción del proyecto...</p>
+                    <p class="card-text"><strong>Estado:</strong> 
+                        <span th:text="${proyecto.estado}" 
+                              th:classappend="${proyecto.estado == 'ACTIVO'} ? 'badge bg-success' : 'badge bg-secondary'">
+                        </span>
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a th:href="@{/proyectos/ver/{id}(id=${proyecto.id})}" class="btn btn-primary btn-sm">Ver Detalle</a>
+                    <span th:text="${#dates.format(proyecto.fechaInicio, 'dd/MM/yyyy')}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje si no hay proyectos -->
+        <div class="col" th:if="${proyectos.isEmpty()}">
+            <p class="text-center text-muted">No hay proyectos registrados aún.</p>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a th:href="@{/fundacion/dashboard/{id}(id=${fundacionId})}" class="btn btn-secondary">Volver al Dashboard</a>
+        <a th:href="@{/proyectos/nuevo/{id}(id=${fundacionId})}" class="btn btn-success">➕ Crear nuevo proyecto</a>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

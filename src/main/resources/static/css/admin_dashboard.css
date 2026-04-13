@@ -1,0 +1,383 @@
+:root {
+    --primary-color: #4377b3;
+    --primary-dark: #365e8f;
+    --secondary-color: #f5f5f5;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --danger-color: #dc3545;
+    --danger-dark: #c82333;
+    --success-color: #28a745;
+    --success-dark: #218838;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 0.3s ease;
+}
+
+.sidebar h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar-links {
+    flex-grow: 1;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: white;
+    padding: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: var(--primary-dark);
+}
+
+.sidebar a i {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.sidebar-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.logout-btn {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: var(--danger-dark);
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: var(--card-bg);
+    overflow-y: auto;
+}
+
+.content-header {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-sidebar {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Cards */
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.section-card {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.section-card p {
+    font-size: 1.1rem;
+    color: #666666;
+}
+
+/* Botones Aprobar / Rechazar */
+.approve-btn, .reject-btn {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 10px 5px 10px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.approve-btn {
+    background-color: var(--success-color);
+}
+
+.approve-btn:hover {
+    background-color: var(--success-dark);
+}
+
+.reject-btn {
+    background-color: var(--danger-color);
+}
+
+.reject-btn:hover {
+    background-color: var(--danger-dark);
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        z-index: 1000;
+        left: -250px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+/* Alineación de botones en la tabla */
+.actions-cell {
+    display: flex;
+    flex-wrap: wrap;       /* Permite que se adapten en pantallas pequeñas */
+    gap: 10px;             /* Espacio entre botones */
+    justify-content: flex-start; /* Opcional: cambia a center si quieres centrado */
+}
+
+.actions-cell form {
+    margin: 0;             /* Elimina márgenes extra de los formularios */
+}
+
+.approve-btn, .reject-btn {
+    flex: 1 1 100px;       /* Todos los botones tendrán al menos 100px y se adaptan */
+    text-align: center;
+}
+/* ==============================
+   Tablas dentro del dashboard
+============================== */
+.section-card table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 1rem;
+}
+
+.section-card th, .section-card td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.section-card th {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.section-card tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.section-card tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ajuste visual en pantallas pequeñas */
+@media (max-width: 768px) {
+    .section-card table {
+        font-size: 0.9rem;
+    }
+
+    .section-card th, .section-card td {
+        padding: 8px;
+    }
+}
+.return-btn-container {
+  margin: 1rem 0;
+}
+
+.return-btn {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: 0.2s ease-in-out;
+}
+
+.return-btn:hover {
+  background-color: #0056b3;
+}
+/* === Estilos generales para tablas del Admin === */
+
+.main-content {
+  padding: 30px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.content-header h2 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+}
+
+.table-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  padding: 15px;
+}
+
+table.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Segoe UI", sans-serif;
+}
+
+table.table thead {
+  background-color: #007bff;
+  color: #fff;
+}
+
+table.table th,
+table.table td {
+  text-align: left;
+  padding: 12px 15px;
+}
+
+table.table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.2s;
+}
+
+table.table tbody tr:hover {
+  background-color: #f1f9ff;
+}
+
+table.table td:nth-child(5) {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* === Estados === */
+
+.estado {
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-align: center;
+  display: inline-block;
+}
+
+.estado.PENDIENTE {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.estado.APROBADA {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.estado.RECHAZADA {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+/* ==============================
+   ANIMACIONES DE ENTRADA ADMIN_DASHBOARD
+============================== */
+@keyframes fade-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Main content */
+.main-content {
+    opacity: 0;
+    animation: fade-in-up 1s ease forwards;
+}
+
+/* Header del contenido */
+.content-header {
+    opacity: 0;
+    animation: fade-in-up 1s ease forwards;
+    animation-delay: 0.2s;
+    animation-fill-mode: forwards;
+}
+
+/* Cada card o tabla */
+.section-card, .table-container {
+    opacity: 0;
+    animation: fade-in-up 0.8s ease forwards;
+}
+
+.section-card:nth-child(1),
+.table-container:nth-child(1) { animation-delay: 0.3s; }
+.section-card:nth-child(2),
+.table-container:nth-child(2) { animation-delay: 0.5s; }
+.section-card:nth-child(3),
+.table-container:nth-child(3) { animation-delay: 0.7s; }

@@ -1,0 +1,71 @@
+body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .status-button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .approve {
+            background-color: #28a745;
+            color: white;
+        }
+        .reject {
+            background-color: #dc3545;
+            color: white;
+        }
+        /* Estilo para los botones de Filtrar y Eliminar */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color var(--transition), transform var(--transition);
+    margin-right: 1rem; /* Espaciado entre botones */
+    margin-top: 1rem; /* Espaciado superior */
+}
+
+button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 64, 133, 0.2);
+}
+
+/* Estilo específico para el botón de Filtrar Solicitudes Pendientes */
+#filter-pending {
+    background-color:#e0a800;
+}
+
+#filter-pending:hover {
+    background-color: #ffbf00; /* Sombra más oscura del amarillo */
+}
+
+/* Estilo específico para el botón de Eliminar Todas las Solicitudes */
+#clear-all {
+    background-color: #dc3545; /* Rojo */
+}
+
+#clear-all:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+}
+
+/* Asegurar que los botones no se apilen en pantallas pequeñas */
+@media (max-width: 768px) {
+    button {
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-right: 0;
+    }
+}

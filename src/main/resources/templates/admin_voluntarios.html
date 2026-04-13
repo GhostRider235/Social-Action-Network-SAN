@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voluntarios</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link th:href="@{/css/admin_dashboard.css}" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <div class="sidebar-links">
+      <a th:href="@{/admin_dashboard}" class="active">
+        <i class='bx bx-home'></i><span>Inicio</span>
+      </a>
+      <a th:href="@{/admin/recargas/pendientes}">
+        <i class='bx bx-credit-card'></i><span>Recargas Pendientes</span>
+      </a>
+      <a th:href="@{/admin/fundaciones/pendientes}">
+        <i class='bx bx-building-house'></i><span>Fundaciones Pendientes</span>
+      </a>
+      <a th:href="@{/admin/donaciones}">
+        <i class='bx bx-donate-heart'></i><span>Donaciones</span>
+      </a>
+      <a th:href="@{/admin/proyectos}">
+        <i class='bx bx-briefcase'></i><span>Proyectos</span>
+      </a>
+      
+    </div>
+    <div class="sidebar-footer">
+      <a th:href="@{/logout}" class="logout-btn">
+        <i class='bx bx-log-out'></i><span>Cerrar sesión</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="content-header">
+      <h2>📋 Listado de Voluntarios</h2>
+    </div>
+
+    <!-- Botón para volver al dashboard -->
+    <div class="return-btn-container">
+      <a th:href="@{/admin_dashboard}" class="return-btn">
+        <i class='bx bx-arrow-back'></i> Volver al Dashboard
+      </a>
+    </div>
+
+    <!-- Tabla de voluntarios -->
+    <div class="table-container section-card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Proyecto</th>
+            <th>Fundación</th>
+            <th>Comentario</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="voluntario : ${voluntarios}">
+            <td th:text="${voluntario.nombreUsuario}">Nombre</td>
+            <td th:text="${voluntario.correoUsuario}">Email</td>
+            <td th:text="${voluntario.telefonoUsuario}">Teléfono</td>
+            <td th:text="${voluntario.nombreProyecto}">Proyecto</td>
+            <td th:text="${voluntario.nombreFundacion}">Fundación</td>
+            <td th:text="${voluntario.comentario}">Comentario</td>
+            <td>
+              <span class="estado" th:classappend="${voluntario.estado}" th:text="${voluntario.estado}">Estado</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

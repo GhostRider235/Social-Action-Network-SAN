@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voluntarios por Proyecto</title>
+  <link rel="stylesheet" th:href="@{/css/fundacion_voluntarios.css}">
+</head>
+<body>
+
+<header>
+  <h1 th:text="'Voluntarios de ' + ${fundacion.nombre}">Voluntarios</h1>
+</header>
+
+<section class="voluntarios-section">
+  <h2>👥 Resumen de Voluntarios por Proyecto</h2>
+
+  <div class="total-voluntarios">
+    <p th:text="'Total de voluntarios en todos los proyectos: ' + ${totalVoluntarios}">Total: 0</p>
+  </div>
+
+  <!-- Si no hay proyectos -->
+  <div th:if="${#lists.isEmpty(voluntariosPorProyecto)}" class="no-voluntarios">
+    <p>Esta fundación aún no tiene proyectos registrados.</p>
+  </div>
+
+  <!-- Mostrar los proyectos con sus voluntarios -->
+  <div th:each="entry : ${voluntariosPorProyecto}" class="proyecto-card">
+    <h3 th:text="${entry.key.nombre}">Nombre del Proyecto</h3>
+
+    <div th:if="${#lists.isEmpty(entry.value)}" class="no-voluntarios">
+      <p>Este proyecto aún no tiene voluntarios.</p>
+    </div>
+
+    <table th:if="${!#lists.isEmpty(entry.value)}" class="tabla-voluntarios">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="voluntario : ${entry.value}">
+          <td th:text="${voluntario.nombre}">Nombre</td>
+          <td th:text="${voluntario.email}">Email</td>
+          <td th:text="${voluntario.telefono}">Teléfono</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a th:href="@{/fundacion/dashboard/{id}(id=${fundacion.id})}" class="back-button">⬅ Volver al panel</a>
+</section>
+
+</body>
+</html>

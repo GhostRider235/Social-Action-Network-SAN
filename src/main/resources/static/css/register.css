@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6ab1e7, #4377b3);
+    animation: fade-in 1s ease-in-out;
+}
+
+.container-form {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    margin: 1rem;
+    animation: slide-in 0.8s ease-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.create-account {
+    color: #4377b3;
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: fade-up 1s ease;
+}
+
+.cuenta-gratis {
+    color: #555;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    position: relative;
+}
+
+.enter {
+    width: 100%;
+    padding: 0.9rem 0.9rem 0.9rem 2.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.enter:focus {
+    background-color: #eef5ff;
+    border-color: #4377b3;
+    box-shadow: 0 0 5px rgba(67, 119, 179, 0.3);
+}
+
+.input-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4377b3;
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+.register-btn {
+    background-color: #4377b3;
+    color: white;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.register-btn:hover {
+    background-color: #365e8f;
+    transform: scale(1.03);
+}
+
+/* Nuevo estilo para botón de "Registrarse como Fundación" */
+.fundacion-btn {
+    background-color: #4377b3;
+    color: white;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-top: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.fundacion-btn:hover {
+    background-color: #365e8f;
+    transform: scale(1.03);
+    text-decoration: none;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: none;
+    animation: fade-in 0.4s ease;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 1.2rem;
+    color: #4377b3;
+    font-size: 0.95rem;
+}
+
+.login-link a {
+    color: #2a4f7b;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #1c3a5c;
+    text-decoration: underline;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 520px) {
+    .container-form {
+        padding: 1.8rem;
+    }
+}

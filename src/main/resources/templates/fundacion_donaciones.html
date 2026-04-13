@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Donaciones Recibidas</title>
+  <link rel="stylesheet" th:href="@{/css/fundacion_donaciones.css}">
+</head>
+<body>
+  <header>
+    <h1 th:text="'Donaciones de ' + ${fundacion.nombre}">Donaciones de la Fundación</h1>
+    <a th:href="@{/fundacion/dashboard/{id}(id=${fundacion.id})}" class="btn-volver">← Volver al Panel</a>
+  </header>
+
+  <section class="donaciones-section">
+    <!-- Si hay proyectos -->
+    <div th:if="${!#maps.isEmpty(donacionesPorProyecto)}">
+      <div class="proyecto-card" th:each="entry : ${donacionesPorProyecto}">
+        <h2 th:text="${entry.key.nombre}">Proyecto</h2>
+
+        <!-- Total recibido -->
+        <p class="total-donaciones">
+          Total recibido:
+          <strong th:text="'$' + ${#numbers.formatDecimal(totalDonacionesPorProyecto[entry.key.id], 0, 'COMMA', 2, 'POINT')}">0</strong>
+        </p>
+
+        <ul>
+          <li th:each="donacion : ${entry.value}">
+            <span th:text="'💰 Monto: $' + ${donacion.monto}"></span> -
+            <span th:text="'Donante: ' + ${donacion.nombreDonante}"></span> -
+            <span th:text="'📅 Fecha: ' + ${#dates.format(donacion.fecha, 'dd/MM/yyyy')}"></span>
+          </li>
+          <li th:if="${#lists.isEmpty(entry.value)}" class="sin-donaciones">
+            Sin donaciones registradas.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Si NO hay proyectos -->
+    <div th:if="${#maps.isEmpty(donacionesPorProyecto)}" class="no-proyectos">
+      <h2>🚫 No tienes proyectos registrados aún</h2>
+      <p>Para recibir donaciones, primero debes crear un proyecto.</p>
+      <a th:href="@{/fundacion/dashboard/{id}(id=${fundacion.id})}" class="btn-crear">
+        ➕ Crear mi primer proyecto
+      </a>
+    </div>
+  </section>
+</body>
+</html>

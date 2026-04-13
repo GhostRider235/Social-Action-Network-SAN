@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Donaciones</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/nuevo_donacione.css}" rel="stylesheet">
+
+</head>
+
+<body>
+<aside class="sidebar">
+    <h2>Panel de Control</h2>
+    <nav class="sidebar-links">
+        <a href="/donacione" aria-current="page"><i class='bx bx-donate-heart'></i> Donaciones</a>
+        <a href="/proyecto"><i class='bx bx-project'></i> Proyectos</a>
+        <a href="/voluntario"><i class='bx bx-user-voice'></i> Voluntarios</a>
+        <a href="/fundacion"><i class='bx bx-building-house'></i> Fundaciones</a>
+    </nav>
+    <button class="btn btn-danger" onclick="logout()">
+        <i class='bx bx-log-out'></i> Cerrar sesión
+    </button>
+</aside>
+
+<main class="main-content">
+    <header class="content-header">
+        <h1>Gestión de Donaciones</h1>
+        <button id="create-btn" class="btn btn-primary">
+            <i class='bx bx-plus-circle'></i> Añadir Donación
+        </button>
+    </header>
+
+    <section class="table-container">
+        <table id="donaciones-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Usuario ID</th>
+                <th>Fundación ID</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Table content will be loaded dynamically -->
+            </tbody>
+        </table>
+        <p id="no-donaciones-message"
+           style="display: none; color: var(--danger-color); text-align: center; padding: 1rem;">
+            No hay donaciones registradas.
+        </p>
+    </section>
+</main>
+
+<!-- Create Modal -->
+<div id="createModal" class="modal" aria-labelledby="createModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-content">
+        <h2 id="createModalTitle">Añadir Donación</h2>
+        <button class="close-btn" aria-label="Cerrar">&times;</button>
+        <form id="createForm">
+            <div class="modal-form-group">
+                <label for="create-monto">Monto:</label>
+                <input type="number" id="create-monto" name="monto" step="0.01" required>
+            </div>
+            <div class="modal-form-group">
+                <label for="create-fecha">Fecha:</label>
+                <input type="date" id="create-fecha" name="fecha" required>
+            </div>
+            <div class="modal-form-group">
+                <label for="create-descripcion">Descripción:</label>
+                <textarea id="create-descripcion" name="descripcion" required></textarea>
+            </div>
+            <div class="modal-form-group">
+                <label for="create-usuarioId">ID del Usuario:</label>
+                <select id="create-usuarioId" name="usuarioId" required>
+                    <option th:each="usuario : ${usuarios}" th:value="${usuario.id}"
+                            th:text="${usuario.nombre}"></option>
+                </select>
+            </div>
+            <div class="modal-form-group">
+                <label for="create-fundacionId">ID de la Fundación:</label>
+                <select id="create-fundacionId" name="fundacionId" required>
+                    <option th:each="proyecto : ${proyectos}" th:value="${proyecto.id}"
+                            th:text="${proyecto.nombre}"></option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal" aria-labelledby="editModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-content">
+        <h2 id="editModalTitle">Editar Donación</h2>
+        <button class="close-btn" aria-label="Cerrar">&times;</button>
+        <form id="editForm">
+            <input type="hidden" name="id">
+            <div class="modal-form-group">
+                <label for="edit-monto">Monto:</label>
+                <input type="number" id="edit-monto" name="monto" step="0.01" required>
+            </div>
+            <div class="modal-form-group">
+                <label for="edit-fecha">Fecha:</label>
+                <input type="date" id="edit-fecha" name="fecha" required>
+            </div>
+            <div class="modal-form-group">
+                <label for="edit-descripcion">Descripción:</label>
+                <textarea id="edit-descripcion" name="descripcion" required></textarea>
+            </div>
+            <div class="modal-form-group">
+                <label for="edit-usuarioId">ID del Usuario:</label>
+                <select id="edit-usuarioId" name="usuarioId" required>
+                    <option th:each="usuario : ${usuarios}" th:value="${usuario.id}"
+                            th:text="${usuario.nombre}"></option>
+                </select>
+            </div>
+            <div class="modal-form-group">
+                <label for="edit-fundacionId">ID de la Fundación:</label>
+                <select id="edit-fundacionId" name="fundacionId" required>
+                    <option th:each="proyecto : ${proyectos}" th:value="${proyecto.id}"
+                            th:text="${proyecto.nombre}"></option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal" aria-labelledby="deleteModalTitle" aria-modal="true" role="dialog">
+    <div class="modal-content">
+        <h2 id="deleteModalTitle">Confirmar Eliminación</h2>
+        <button class="close-btn" aria-label="Cerrar">&times;</button>
+        <p>¿Está seguro que desea eliminar esta donación? Esta acción no se puede deshacer.</p>
+        <input type="hidden" id="deleteId">
+        <div class="modal-buttons">
+            <button type="button" class="btn btn-secondary close-modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+    <script th:src="@{/js/nuevo_donacione.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Fundación</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/register_fundacion.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container-form">
+    <h1 class="create-account">Registro Fundación</h1>
+    <p class="cuenta-gratis">Crea una cuenta para tu fundación</p>
+
+    <form th:action="@{/fundacion/register}" 
+          th:object="${fundacion}" 
+          method="post" 
+          enctype="multipart/form-data" 
+          class="formulario">
+
+        <!-- Nombre -->
+        <div class="input-group">
+            <i class='bx bx-building input-icon'></i>
+            <input th:field="*{nombre}" class="enter" type="text" placeholder="Nombre de la fundación" required>
+        </div>
+
+        <!-- Descripción -->
+        <div class="input-group">
+            <i class='bx bx-detail input-icon'></i>
+            <textarea th:field="*{descripcion}" class="enter" placeholder="Descripción" rows="3" required></textarea>
+        </div>
+
+        <!-- Numero de Contacto -->
+        <div class="input-group">
+            <i class='bx bx-phone input-icon'></i>
+            <input th:field="*{contacto}" class="enter" type="tel" placeholder="Teléfono (10 dígitos)" 
+                   pattern="[0-9]{10}" maxlength="10" inputmode="numeric" required
+                   title="Ingrese un número válido de 10 dígitos">
+        </div>
+
+        <!-- Correo -->
+        <div class="input-group">
+            <i class='bx bx-envelope input-icon'></i>
+            <input th:field="*{correo}" class="enter" type="email" placeholder="Correo de la fundación" required>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="input-group">
+            <i class='bx bx-map input-icon'></i>
+            <input th:field="*{ubicacion}" id="ubicacion" class="enter" type="text" placeholder="Ubicación (ej: Bogotá, Colombia)" required>
+            <button type="button" id="btnUbicacion" class="get-location-btn">📍</button>
+        </div>
+        <small id="msgUbicacion" class="location-msg"></small>
+
+        <!-- Contraseña -->
+        <div class="input-group">
+            <i class='bx bx-lock-alt input-icon'></i>
+            <input th:field="*{contrasena}" class="enter" type="password" placeholder="Contraseña" required>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="input-group">
+            <i class='bx bx-lock-alt input-icon'></i>
+            <input th:field="*{confirmarContrasena}" class="enter" type="password" placeholder="Confirmar contraseña" required>
+        </div>
+
+        <!-- Logo -->
+        <!-- Logo -->
+<div class="file-upload">
+    <label for="logoFile" class="file-label">
+        <i class='bx bx-image'></i>
+        <span>Seleccionar logo</span>
+    </label>
+    <input th:field="*{logo}" id="logoFile" type="file" accept="image/*" required>
+    <small id="file-name" class="file-name">Ningún archivo seleccionado</small>
+
+    <!-- Miniatura del logo -->
+    <div class="image-preview" id="imagePreview">
+        <img id="previewImg" src="" alt="Vista previa del logo" style="display: none;">
+    </div>
+</div>
+
+
+        <!-- Error -->
+        <p th:if="${error}" th:text="${error}" class="error-message"></p>
+
+        <button type="submit" class="register-btn">Registrar Fundación</button>
+    </form>
+
+    <p class="login-link">¿Ya tienes cuenta? 
+        <a th:href="@{/login}">Inicia sesión</a>
+    </p>
+</div>
+
+<!-- Tu script de ubicación -->
+<script>
+document.getElementById("btnUbicacion").addEventListener("click", () => {
+    const msg = document.getElementById("msgUbicacion");
+    const input = document.getElementById("ubicacion");
+    const btn = document.getElementById("btnUbicacion");
+
+    // Reiniciar estado del botón e ícono
+    btn.classList.remove("active");
+    btn.textContent = "📍";
+
+    msg.textContent = "Obteniendo ubicación...";
+    msg.style.color = "gray";
+
+    if (!navigator.geolocation) {
+        msg.textContent = "Tu navegador no soporta geolocalización. Escríbela manualmente.";
+        msg.style.color = "red";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                const data = await response.json();
+                const lugar = data.address.city || data.address.town || data.address.village || "Ubicación desconocida";
+                const pais = data.address.country || "";
+                input.value = `${lugar}, ${pais}`;
+                msg.textContent = "Ubicación detectada automáticamente ✅";
+                msg.style.color = "green";
+
+                // Activar animación, color verde y cambiar ícono a ✅
+                btn.classList.add("active");
+                btn.textContent = "✅";
+
+            } catch (error) {
+                msg.textContent = "No se pudo obtener el nombre del lugar. Escribe tu ubicación.";
+                msg.style.color = "orange";
+            }
+        },
+        (err) => {
+            msg.textContent = "No se pudo acceder a la ubicación. Escribe tu ciudad manualmente.";
+            msg.style.color = "orange";
+        }
+    );
+});
+</script>
+
+
+
+<!-- Script para la vista previa del logo -->
+<script>
+document.getElementById("logoFile").addEventListener("change", function() {
+    const fileName = this.files.length ? this.files[0].name : "Ningún archivo seleccionado";
+    document.getElementById("file-name").textContent = fileName;
+
+    const previewImg = document.getElementById("previewImg");
+    const file = this.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewImg.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        previewImg.src = "";
+        previewImg.style.display = "none";
+    }
+});
+</script>
+
+
+</body>
+</html>

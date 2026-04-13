@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprobar Solicitud - Fundación LinkUp</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link th:href="@{/css/approve_request.css}" rel="stylesheet">
+
+</head>
+
+<body>
+    <h1>Detalles de la Solicitud de Voluntariado</h1>
+
+    <div id="volunteer-summary">
+        <!-- Los datos del voluntario serán mostrados aquí -->
+    </div>
+
+    <h2>¿Aprobar esta solicitud?</h2>
+
+
+    <div id="solicitudes-container"></div>
+<button id="filter-pending">Filtrar Solicitudes Pendientes</button>
+<button id="clear-all">Eliminar Todas las Solicitudes</button>
+
+    <script th:src="@{/js/approve_request.js}"></script>
+
+</body>
+</html>

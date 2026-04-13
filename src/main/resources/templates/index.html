@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundation Action Network</title>
+
+    <!-- Fuente -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link th:href="@{/css/index.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<header>
+    <div th:if="${mensajeExito}" class="alerta-exito">
+        <p th:text="${mensajeExito}"></p>
+    </div>
+
+    <div class="container header-content">
+        <div class="logo">
+            <img th:src="@{/css/logo.jpeg}" alt="Fundación Logo">
+        </div>
+
+
+        <nav id="main-nav">
+            <a href="#home">Inicio</a>
+            <a href="#about">Sobre Nosotros</a>
+            <a href="#projects">Proyectos</a>
+
+            <!-- Login / Logout profesional -->
+            <a th:if="${usuarioLogueado == null}" th:href="@{/login}">Login</a>
+            <a th:if="${usuarioLogueado != null}" th:href="@{/logout}">Cerrar sesión</a>
+
+            <span th:if="${usuarioLogueado != null}" class="bienvenida">
+                👤 <strong th:text="${usuarioLogueado.nombre}"></strong>
+            </span>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section id="home" class="hero">
+    <div class="container">
+        <h1>Transformando Comunidades Juntos 💙</h1>
+        <p>
+            Conéctate con fundaciones, apoya causas reales y ayuda a cambiar vidas 
+            a través de tus donaciones o voluntariado.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#help" class="btn btn-primary">Comienza a ayudar</a>
+            <a href="#projects" class="btn btn-secondary">Explorar proyectos</a>
+        </div>
+    </div>
+</section>
+
+<!-- IMPACTO -->
+<section class="impact">
+    <div class="container">
+        <h2>Nuestro Impacto</h2>
+
+        <div class="stats">
+            <div>
+                <strong>120+</strong>
+                <p>Fundaciones registradas</p>
+            </div>
+            <div>
+                <strong>850+</strong>
+                <p>Voluntarios activos</p>
+            </div>
+            <div>
+                <strong>1.2M+</strong>
+                <p>En donaciones recaudadas</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+    <div class="container about-content">
+        <div>
+            <h2>Sobre Nosotros</h2>
+            <p>
+                FAN trabaja para mejorar la calidad de vida en nuestras comunidades,
+                creando impacto social real y sostenible.
+            </p>
+            <p><strong>Misión:</strong> Promover el desarrollo y bienestar social.</p>
+            <p><strong>Visión:</strong> Ser referencia en impacto social positivo.</p>
+        </div>
+
+        <img th:src="@{/css/logo.jpeg}" alt="Sobre Nosotros">
+    </div>
+</section>
+
+<!-- PROYECTOS -->
+<section id="projects" class="projects">
+    <div class="container">
+        <h2>Fundaciones Alcanzadas</h2>
+
+        <div class="projects-grid">
+            <div class="project-card"
+                 th:each="proyecto, iterStat : ${proyectos}"
+                 th:if="${iterStat.index < 3}">
+                <img th:src="@{/css/logo.jpeg}" alt="Proyecto">
+                <h3 th:text="${proyecto.nombre}"></h3>
+                <p th:text="${proyecto.descripcion}"></p>
+            </div>
+        </div>
+
+        <div class="center">
+            <a th:href="@{/proyectos/todos}" class="btn btn-primary">
+                Ver todos los proyectos
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- JOIN -->
+<section class="join-us">
+    <div class="container join-content">
+        <h2>Únete al cambio 🌍</h2>
+        <p>Forma parte de una red que impulsa el bienestar social.</p>
+        <a th:href="@{/register}" class="btn btn-primary">Crear cuenta</a>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="container footer-content">
+        <div class="footer-links">
+            <a href="#about">Sobre Nosotros</a>
+            <a href="#projects">Proyectos</a>
+        </div>
+
+        <p>&copy; 2026 FAN. Todos los derechos reservados.</p>
+    </div>
+</footer>
+<!-- CHATBOT -->
+<div id="chatbot">
+
+    <!-- Botón flotante -->
+    <div id="chat-toggle" onclick="toggleChat()">
+        💬
+    </div>
+
+    <!-- Ventana -->
+    <div id="chat-window">
+
+        <!-- Header -->
+        <div id="chat-header">
+            <span>Asistente FAN</span>
+            <button onclick="toggleChat()">✖</button>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="chat-body">
+            <div id="mensajes"></div>
+        </div>
+
+        <!-- Input -->
+        <div id="chat-input">
+            <input type="text" id="inputMensaje" placeholder="Escribe tu mensaje..." />
+            <button onclick="enviarMensaje()">➤</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script th:src="@{/js/index.js}"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- PANEL DE INFORMACIÓN -->
+    <div class="info-panel" id="infoPanel">
+        <h1 id="infoTitle">Foundation Action Network</h1>
+        <p id="infoText">¿Deseas ingresar como fundación?</p>
+        <button id="switchBtn" class="switch-btn">Iniciar como Fundación</button>
+    </div>
+
+    <!-- PANEL DE FORMULARIOS -->
+    <div class="form-panel">
+        <div class="forms" id="forms">
+
+            <!-- LOGIN USUARIO -->
+            <form th:action="@{/login}" method="post" id="loginUsuarioForm" class="formulario active">
+                <h2 class="login-title">Iniciar sesión - Usuario</h2>
+
+                <div class="input-group">
+                    <i class='bx bx-envelope input-icon'></i>
+                    <input class="enter" type="email" id="email" name="email" placeholder="Correo electrónico" required>
+                    <span class="error-message" id="email-error"></span>
+                </div>
+
+                <div class="input-group">
+                    <i class='bx bx-lock-alt input-icon'></i>
+                    <input class="enter" type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
+                    <span class="error-message" id="contrasena-error"></span>
+                </div>
+
+                <button type="submit" class="login-btn">Iniciar sesión</button>
+                <a th:href="@{/register}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
+            </form>
+
+            <!-- LOGIN FUNDACIÓN -->
+            <form th:action="@{/fundacion/login}" method="post" id="loginFundacionForm" class="formulario">
+                <h2 class="login-title">Iniciar sesión - Fundación</h2>
+
+                <div class="input-group">
+                    <i class='bx bx-envelope input-icon'></i>
+                    <input class="enter" type="email" id="correoFundacion" name="correo" placeholder="Correo de la fundación" required>
+                    <span class="error-message" id="correoFundacion-error"></span>
+                </div>
+
+                <div class="input-group">
+                    <i class='bx bx-lock-alt input-icon'></i>
+                    <input class="enter" type="password" id="contrasenaFundacion" name="contrasena" placeholder="Contraseña" required>
+                    <span class="error-message" id="contrasenaFundacion-error"></span>
+                </div>
+
+                <button type="submit" class="login-btn">Iniciar sesión</button>
+                <a th:href="@{/fundacion/register}" class="register-link">¿Tu fundación no está registrada?</a>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/login.js}"></script>
+</body>
+</html>

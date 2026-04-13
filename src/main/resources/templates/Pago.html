@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/VerC.css">
+    <title>Pago</title>
+    <link th:href="@{/css/pago.css}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Introduce los datos de la tarjeta de crédito</h2>
+        <form action="#">
+            <label for="card-holder">Nombre titular de la tarjeta</label>
+            <input type="text" id="card-holder" placeholder="Nombre que aparece en la tarjeta">
+
+            <label for="card-number">Número de la tarjeta</label>
+            <input type="text" id="card-number" placeholder="---- ---- ---- ----">
+
+            <label for="expiry-date">Fecha de vencimiento</label>
+            <input type="text" id="expiry-date" placeholder="mm/yy">
+
+            <label for="security-code">Código de control</label>
+            <input type="text" id="security-code" placeholder="---">
+
+            <button type="submit" class="submit-button">Continuar</button>
+        </form>
+    </div>
+
+        <script th:src="@{/js/pago.js}"></script>
+
+</body>
+</html>

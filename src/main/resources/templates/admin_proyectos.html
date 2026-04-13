@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyectos - Panel Admin</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link th:href="@{/css/admin_dashboard.css}" rel="stylesheet">
+  <style>
+    /* Estilo modal */
+    .modal {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+    }
+    .modal-content {
+      background:#fff;
+      padding:20px;
+      border-radius:10px;
+      max-width:500px;
+      width:90%;
+      max-height:80vh;
+      overflow-y:auto;
+    }
+    .close {
+      float:right;
+      font-size:24px;
+      cursor:pointer;
+    }
+    .btn-ver-mas {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #4CAF50;      /* Verde atractivo */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-ver-mas i {
+    font-size: 1em;
+}
+
+.btn-ver-mas:hover {
+    background: #45a049;      /* Verde más oscuro al pasar mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <div class="sidebar-links">
+      <a th:href="@{/admin_dashboard}" class="active">
+        <i class='bx bx-home'></i><span>Inicio</span>
+      </a>
+      <a th:href="@{/admin/recargas/pendientes}">
+        <i class='bx bx-credit-card'></i><span>Recargas Pendientes</span>
+      </a>
+      <a th:href="@{/admin/fundaciones/pendientes}">
+        <i class='bx bx-building-house'></i><span>Fundaciones Pendientes</span>
+      </a>
+      <a th:href="@{/admin/donaciones}">
+        <i class='bx bx-donate-heart'></i><span>Donaciones</span>
+      </a>
+      
+      <a th:href="@{/admin/voluntarios}">
+        <i class='bx bx-group'></i><span>Voluntarios</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <a th:href="@{/logout}" class="logout-btn"><i class='bx bx-log-out'></i><span>Cerrar sesión</span></a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="content-header">
+      <h2>📁 Listado de Proyectos</h2>
+    </div>
+    <!-- 🔹 Botón para volver al dashboard -->
+  <div class="return-btn-container">
+    <a th:href="@{/admin_dashboard}" class="return-btn">
+      <i class='bx bx-arrow-back'></i> Volver al Dashboard
+    </a>
+  </div>
+
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fundación</th>
+            <th>Duración</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+  <tr th:each="proyecto : ${proyectos}">
+    <td th:text="${proyecto.id}"></td>
+    <td th:text="${proyecto.nombre}"></td>
+    
+    <!-- Descripción truncada con botón modal -->
+    <td>
+      <span th:text="${proyecto.descripcion.length() > 50 ? proyecto.descripcion.substring(0,50) + '…' : proyecto.descripcion}"></span>
+      <!-- Botón con ícono -->
+<button class="btn-ver-mas" type="button"
+        th:attr="data-proyecto-id=${proyecto.id}, data-descripcion=${proyecto.descripcion}"
+        onclick="abrirModal(this)">
+    <i class='bx bx-show'></i> Ver más
+</button>
+
+    </td>
+
+    <!-- Nombre de la fundación -->
+    <td th:text="${proyecto.nombreFundacion}"></td>
+
+    <!-- Duración en días -->
+    <td th:text="${proyecto.duracion != null ? proyecto.duracion + ' días' : '-'}"></td>
+
+    <!-- Fechas -->
+    <td th:text="${proyecto.fechaInicio != null ? #dates.format(proyecto.fechaInicio, 'dd/MM/yyyy') : '-'}"></td>
+    <td th:text="${proyecto.fechaFin != null ? #dates.format(proyecto.fechaFin, 'dd/MM/yyyy') : '-'}"></td>
+
+    <!-- Estado -->
+    <td>
+      <span class="estado" th:classappend="${proyecto.estado}">
+        <span th:text="${proyecto.estado}"></span>
+      </span>
+    </td>
+  </tr>
+</tbody>
+
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalDescripcion" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal()">&times;</span>
+      <h3>Descripción completa</h3>
+      <p id="descripcionCompleta"></p>
+    </div>
+  </div>
+
+  <script>
+    function abrirModal(btn) {
+        const descripcion = btn.getAttribute('data-descripcion');
+        document.getElementById('descripcionCompleta').innerText = descripcion;
+        document.getElementById('modalDescripcion').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalDescripcion').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

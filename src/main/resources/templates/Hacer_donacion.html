@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donaciones - Fundación LinkUp</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/Hacer_donacion.css}" rel="stylesheet">
+
+    
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <img src="css/logo.jpeg" alt="Fundación Logo">
+            </div>
+            <button class="menu-button" id="menu-toggle">☰</button>
+            <nav id="main-nav">
+                <a href="/"><i class='bx bx-home-alt'></i> Inicio</a>
+                <a href="#" id="login-link">Login</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<section class="donation-hero">
+    <div class="container">
+        <h1>Haz una Donación</h1>
+        <p>Tu contribución puede cambiar vidas. Apoya nuestras causas hoy mismo.</p>
+    </div>
+</section>
+
+<section class="donation-form">
+    <div class="container">
+        <h2>Formulario de Donación</h2>
+        <div id="error-message"></div>
+        <div id="success-message"></div>
+        <form id="donation-form" action="#" method="post">
+            <div class="modal-form-group">
+                <label for="create-fundacionId">Fundacion que se le hara la donacion</label>
+                <select id="create-fundacionId" name="fundacionId" onclick="ordenarSelect()" required>
+                    <option></option>
+                    <option th:each="proyecto : ${proyectos}" th:value="${proyecto.id}"
+                            th:text="${proyecto.nombre}"></option>
+                </select>
+
+            </div>
+
+            <label for="donation-amount">Cantidad a Donar:</label>
+            <div style="display: flex; gap: 0.5rem;">
+                <select id="donation-currency" name="donation-currency" style="width: 30%;">
+                    <option value="USD">USD</option>
+                    <option value="COP">COP</option>
+                    <option value="EUR">EUR</option>
+                </select>
+                <input type="number" id="donation-amount" name="donation-amount" min="5" step="0.01" required
+                       style="width: 70%;">
+            </div>
+
+            <label for="card-number">Número de Tarjeta:</label>
+            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" required>
+
+            <div style="display: flex; gap: 1rem;">
+                <div style="flex: 1;">
+                    <label for="card-expiry">Fecha de Expiración:</label>
+                    <input type="text" id="card-expiry" name="card-expiry" placeholder="MM/AA" required>
+                </div>
+                <div style="flex: 1;">
+                    <label id="miLabel" for="card-cvv">CVV:</label>
+                    <input type="text" id="card-cvv" name="card-cvv" placeholder="123" required>
+
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Donar Ahora</button>
+        </form>
+    </div>
+</section>
+
+<section class="donation-info">
+    <div class="container">
+        <h2>¿Por qué Donar?</h2>
+        <p>Tu apoyo nos permite continuar con nuestros proyectos y expandir nuestro impacto. Cada donación, grande o
+            pequeña, ayuda a transformar vidas.</p>
+        <div class="impact-stats">
+            <div class="stat">
+                <h3>+10,000</h3>
+                <p>Personas Impactadas</p>
+            </div>
+            <div class="stat">
+                <h3>50+</h3>
+                <p>Proyectos Completados</p>
+            </div>
+            <div class="stat">
+                <h3>100%</h3>
+                <p>Transparencia en Uso de Fondos</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Fundación LinkUp. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script th:src="@{/js/Hacer_donacion_ordenarSelect.js}"></script>
+    <script th:src="@{/js/Hacer_donacion_cvv.js}"></script>
+    <script th:src="@{/js/Hacer_donacion_donacion.js}"></script>
+    <script th:src="@{/js/Hacer_donacion_menu.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro F.A.N</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link th:href="@{/css/register.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container-form">
+    <form th:action="@{/register}" th:object="${usuario}" method="post" class="formulario">
+        <h2 class="create-account">Crear una cuenta</h2>
+        <p class="cuenta-gratis">Crear una cuenta gratis</p>
+
+        <!-- Nombre -->
+        <div class="input-group">
+            <i class='bx bx-user input-icon'></i>
+            <input th:field="*{nombre}" class="enter" type="text" placeholder="Nombre completo" required>
+        </div>
+
+        <!-- Correo -->
+        <div class="input-group">
+            <i class='bx bx-envelope input-icon'></i>
+            <input th:field="*{email}" class="enter" type="email" placeholder="Correo electrónico" required>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="input-group">
+            <i class='bx bx-phone input-icon'></i>
+            <input th:field="*{telefono}" class="enter" type="tel" placeholder="Teléfono (10 dígitos)"
+                   pattern="[0-9]{10}" maxlength="10" inputmode="numeric" required
+                   title="Ingrese un número válido de 10 dígitos">
+        </div>
+
+        <!-- Contraseña -->
+        <div class="input-group">
+            <i class='bx bx-lock-alt input-icon'></i>
+            <input th:field="*{contrasena}" class="enter" type="password" placeholder="Contraseña" required>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="input-group">
+            <i class='bx bx-lock input-icon'></i>
+            <input th:field="*{confirmarContrasena}" class="enter" type="password" placeholder="Confirmar contraseña" required>
+                    <span class="info-contrasena">La contraseña debe ser mínimo de 6 caracteres</span>
+
+        </div>
+
+        <!-- Botón de registro -->
+        <button type="submit" class="register-btn">Registrarse</button>
+    </form>
+
+    <p class="login-link">¿Ya tienes una cuenta? <a th:href="@{/login}">Iniciar sesión</a></p>
+
+    
+</div>
+</body>
+</html>

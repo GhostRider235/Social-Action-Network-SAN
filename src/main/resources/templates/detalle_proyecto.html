@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Proyecto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border-radius: 10px;
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .btn {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="container mt-5">
+
+    <!-- 🟦 ENCABEZADO DEL PROYECTO -->
+    <div class="card mb-4 shadow">
+        <div class="card-body">
+            <h2 class="card-title mb-3" th:text="${proyecto.nombre}">Nombre del Proyecto</h2>
+
+            <p><strong>Descripción:</strong> 
+                <span th:text="${proyecto.descripcion}">Descripción del proyecto</span>
+            </p>
+
+            <p><strong>Estado:</strong>
+                <span th:text="${proyecto.estado}" 
+                      th:classappend="${proyecto.estado == 'ACTIVO'} ? 'badge bg-success' : 'badge bg-secondary'">
+                </span>
+            </p>
+
+            <p><strong>Fecha inicio:</strong>
+                <span th:text="${#dates.format(proyecto.fechaInicio, 'dd/MM/yyyy')}">dd/MM/yyyy</span>
+            </p>
+
+            <p><strong>Fecha fin:</strong>
+                <span th:text="${proyecto.fechaFin != null ? #dates.format(proyecto.fechaFin, 'dd/MM/yyyy') : 'En curso'}">
+                    En curso
+                </span>
+            </p>
+
+            <!-- BOTÓN PARA TERMINAR PROYECTO -->
+            <form th:if="${proyecto.estado == 'ACTIVO'}" 
+                  th:action="@{'/proyectos/terminar/' + ${proyecto.id}}" 
+                  method="post">
+                <button class="btn btn-danger mt-3" type="submit">Terminar Proyecto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 💰 SECCIÓN DE DONACIONES -->
+<div class="card mb-4 shadow">
+    <div class="card-header bg-primary text-white">
+        Donaciones Recibidas
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Monto</th>
+                    <th>Descripción</th>
+                    <th>Donante</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entrada : ${donacionesConUsuarios}"
+                    th:if="${entrada.key.estado != 'RECHAZADA'}"> <!-- 🔹 ocultar rechazadas -->
+                    <td th:text="${entrada.key.monto} + ' $'">0 $</td>
+                    <td th:text="${entrada.key.descripcion}">Descripción</td>
+                    <td th:text="${entrada.value.nombre}">Nombre Donante</td>
+                    <td th:text="${#dates.format(entrada.key.fecha, 'dd/MM/yyyy')}">dd/MM/yyyy</td>
+                    <td>
+                        <span th:text="${entrada.key.estado}"
+                              th:classappend="${entrada.key.estado == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
+                                              (${entrada.key.estado == 'APROBADA'} ? 'badge bg-success' : 'badge bg-secondary')">
+                        </span>
+                    </td>
+
+                    <td>
+                        <!-- Solo mostrar botones si está pendiente -->
+                        <div th:if="${entrada.key.estado == 'PENDIENTE'}">
+                            <form th:action="@{'/donaciones/aprobar/' + ${entrada.key.id}}" method="post" style="display:inline;">
+                                <button class="btn btn-success btn-sm" type="submit">Aprobar</button>
+                            </form>
+                            <form th:action="@{'/donaciones/rechazar/' + ${entrada.key.id}}" method="post" style="display:inline;">
+                                <button class="btn btn-danger btn-sm" type="submit">Rechazar</button>
+                            </form>
+                        </div>
+
+                        <!-- Si ya está aprobada -->
+                        <div th:if="${entrada.key.estado == 'APROBADA'}">
+                            <span class="badge bg-success">Aprobada ✅</span>
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${donacionesConUsuarios.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted">No hay donaciones aún</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+    <!-- 🤝 SECCIÓN DE VOLUNTARIOS -->
+<div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">
+        Voluntarios
+    </div>
+    <div class="card-body">
+        <ul class="list-group mb-3">
+
+            <li class="list-group-item d-flex justify-content-between align-items-start"
+                th:each="vol : ${voluntarios}"
+                th:if="${vol.estado == null or vol.estado == 'Pendiente' or vol.estado == 'Aprobado'}"
+                th:attr="data-vol-id=${vol.id}">
+
+                <div>
+                    <strong th:text="${vol.nombreUsuario}">Nombre Voluntario</strong><br>
+                    <span><strong>Correo:</strong> <span th:text="${vol.correoUsuario}">correo@example.com</span></span><br>
+                    <span><strong>Teléfono:</strong> <span th:text="${vol.telefonoUsuario}">123456</span></span><br>
+                    <span><strong>Comentario:</strong> <span th:text="${vol.comentario}">Comentario</span></span><br>
+                    <span><strong>Fecha Asignación:</strong> 
+                        <span th:text="${#dates.format(vol.fechaAsignacion, 'dd/MM/yyyy')}">dd/MM/yyyy</span>
+                    </span><br>
+                    <span><strong>Estado:</strong> 
+                        <span th:text="${vol.estado != null ? vol.estado : 'Pendiente'}"
+                              th:classappend="${vol.estado == 'Aprobado'} ? 'badge bg-success' : 'badge bg-warning text-dark'">
+                        </span>
+                    </span>
+                </div>
+
+                <!-- 🔽 ACCIONES / INDICADORES SEGÚN ESTADO -->
+                <div>
+                    <!-- Si el voluntario está pendiente -->
+                    <div th:if="${vol.estado == null or vol.estado == 'Pendiente'}">
+                        <form th:action="@{'/proyectos/voluntarios/aprobar/' + ${vol.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+                        </form>
+                        <form th:action="@{'/proyectos/voluntarios/rechazar/' + ${vol.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Rechazar</button>
+                        </form>
+                        <form th:action="@{'/proyectos/voluntarios/eliminar/' + ${vol.id}}" method="post" style="display:inline;"
+                              onsubmit="return confirmarEliminacion();">
+                            <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>
+                        </form>
+                    </div>
+
+                    <!-- Si el voluntario ya fue aprobado -->
+                    <div th:if="${vol.estado == 'Aprobado'}">
+                        <span class="badge bg-success">Aprobado ✅</span>
+                    </div>
+                </div>
+
+            </li>
+
+            <!-- Si no hay voluntarios -->
+            <li class="list-group-item text-muted" th:if="${voluntarios.isEmpty()}">
+                No hay voluntarios pendientes o aprobados
+            </li>
+        </ul>
+    </div>
+</div>
+
+    <!-- BOTÓN VOLVER -->
+    <div class="mt-4">
+        <a th:href="@{'/fundacion/dashboard/' + ${proyecto.fundacionId}}" class="btn btn-secondary">Volver</a>
+    </div>
+
+    <script th:src="@{/js/detalle_proyecto.js}" defer></script>
+</body>
+</html>

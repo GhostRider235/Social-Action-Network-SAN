@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Fundación</title>
+    <!-- CSS -->
+    <link th:href="@{/css/fundacion_dashboard.css}" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <img th:src="@{'/fundacion/' + (${fundacion} != null ? ${fundacion.id} : '') + '/logo'}" alt="Logo de la fundación">
+        </div>
+        <h1 th:text="${fundacion} != null ? ${fundacion.nombre} : 'Fundación'">Nombre de la Fundación</h1>
+        <nav>
+            <a th:href="@{/fundacion/dashboard/{id}(id=${fundacion} != null ? ${fundacion.id} : '')}">Inicio</a>
+            <a th:href="@{/proyectos/fundacion/{id}(id=${fundacion} != null ? ${fundacion.id} : '')}">Mis proyectos</a>
+            <a th:href="@{/fundacion/donaciones/{id}(id=${fundacion} != null ? ${fundacion.id} : '')}">Donaciones</a>
+            <a th:href="@{/fundacion/voluntarios-todos/{id}(id=${fundacion} != null ? ${fundacion.id} : '')}">Voluntarios</a>
+            <a th:href="@{/logout}">Cerrar Sesión</a>
+        </nav>
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Bienvenida, <span th:text="${fundacion.nombre}">Fundación</span></h1>
+        <p>Aquí puedes gestionar tus proyectos, donaciones y voluntarios.</p>
+        <a th:href="@{/proyectos/nuevo/{id}(id=${fundacion.id})}" class="btn-primary">
+            ➕ Crear nuevo proyecto
+        </a>
+    </section>
+
+    <!-- PROYECTOS DE LA FUNDACIÓN -->
+    <section class="projects container">
+        <h2>Mis proyectos recientes</h2>
+        <div class="projects-grid">
+            <!-- Recorre proyectos -->
+            <div class="project-card" th:each="proyecto : ${proyectos}">
+                <h3 th:text="${proyecto.nombre}">Nombre proyecto</h3>
+                <p th:text="${proyecto.descripcion}">Descripción corta del proyecto...</p>
+                
+                <div class="buttons">
+                    <a th:href="@{/proyectos/ver/{id}(id=${proyecto.id})}" class="btn-primary">Ver más</a>
+
+                    <form th:if="${proyecto.estado == 'TERMINADO'}"
+                          th:action="@{/fundacion/proyectos/eliminar/{id}(id=${proyecto.id})}" 
+                          method="post" style="display:inline;">
+                        <button type="submit" class="btn-danger">🗑 Borrar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Mensaje si no hay proyectos -->
+            <div class="project-card" th:if="${#lists.isEmpty(proyectos)}">
+                <p class="text-center text-muted">No hay proyectos activos.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025 - Plataforma de Fundaciones</p>
+        <div class="social-media">
+            <a href="#"><i class="bx bxl-facebook"></i></a>
+            <a href="#"><i class="bx bxl-instagram"></i></a>
+            <a href="#"><i class="bx bxl-twitter"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector("nav").classList.toggle("active");
+        }
+document.addEventListener("DOMContentLoaded", () => {
+    // Añade clase active a hero y cards
+    const hero = document.querySelector(".hero");
+    const cards = document.querySelectorAll(".project-card");
+
+    if (hero) hero.classList.add("active");
+    cards.forEach(card => card.classList.add("active"));
+});
+
+    </script>
+</body>
+</html>

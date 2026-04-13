@@ -1,0 +1,84 @@
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #f4f7fa;
+      color: #333;
+      padding: 20px;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #002f6c;
+      padding: 15px 30px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .navbar a:hover {
+      color: #ffcc00;
+    }
+
+    /* Container */
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .balance h2 {
+      font-size: 32px;
+      color: #002f6c;
+      margin-bottom: 10px;
+    }
+
+    .balance p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .action-button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #002f6c;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .action-button:hover {
+      background-color: #004b99;
+    }
