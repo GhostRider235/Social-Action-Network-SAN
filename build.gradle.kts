@@ -37,7 +37,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
 	// Seguridad y Encriptación
-	implementation("org.springframework.security:spring-security-crypto")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
 
 	// Spring AI (OpenAI)
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
