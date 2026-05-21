@@ -11,4 +11,12 @@ public interface DonacionRepository extends MongoRepository<Donacion, String> {
     List<Donacion> findByUsuarioId(String usuarioId);
     List<Donacion> findByProyectoId(String proyectoId);
     // Métodos específicos de Donación pueden añadirse aquí
+    long countByFundacionIdAndEstado(
+        String fundacionId,
+        String estado
+);
+    List<Donacion> findByFundacionIdAndEstado(
+        String fundacionId,
+        String estado
+);
 }

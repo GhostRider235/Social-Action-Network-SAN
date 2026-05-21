@@ -1,17 +1,20 @@
 package com.proyect.Social_action_networkks.modelo;
 
-import lombok.*;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Document(collection = "usuarios")
 @Data
@@ -39,7 +42,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.getPassword();
+        return this.contrasena;
     }
 
     @Override

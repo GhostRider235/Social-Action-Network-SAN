@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuario Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+<div class="particles"></div>
+
+<header class="navbar">
+    <div class="logo">
+        <i class='bx bx-heart-circle'></i>
+        <span>Fuondation Action Network</span>
+    </div>
+
+    <div class="nav-right">
+        <a th:href="@{/usuario/perfil}" class="nav-btn">
+            <i class='bx bx-user'></i>
+            Perfil
+        </a>
+
+        <a th:href="@{/logout}" class="nav-btn logout">
+            <i class='bx bx-log-out'></i>
+            Salir
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+
+    <div class="hero-content fade-up">
+
+        <h1>
+            Bienvenido,
+            <span th:text="${usuario.nombre}"></span>
+        </h1>
+
+        <p>
+            Gracias por ser parte de esta red de apoyo y solidaridad.
+        </p>
+
+    </div>
+
+</section>
+
+<section class="cards-container">
+
+    <div class="card fade-up delay-1">
+
+    <div class="icon blue">
+        <i class='bx bx-wallet'></i>
+    </div>
+
+    <h2>Saldo Disponible</h2>
+
+    <p class="big-text">
+
+        $<span id="saldoUsuario"
+               th:text="${usuario.saldo}">
+        </span>
+
+    </p>
+
+</div>  
+
+    <div class="card fade-up delay-2">
+        <div class="icon green">
+            <i class='bx bx-envelope'></i>
+        </div>
+
+        <h2>Correo</h2>
+
+        <p th:text="${usuario.email}"></p>
+    </div>
+
+    <div class="card fade-up delay-3">
+        <div class="icon orange">
+            <i class='bx bx-phone'></i>
+        </div>
+
+        <h2>Teléfono</h2>
+
+        <p th:text="${usuario.telefono}"></p>
+    </div>
+
+</section>
+
+<section class="quick-actions fade-up delay-4">
+
+    <h2>Acciones rápidas</h2>
+
+    <div class="actions-grid">
+
+        
+
+        <a th:href="@{/recarga}" class="action-card">
+            <i class='bx bx-user-circle'></i>
+            <span>Recargar saldo</span>
+        </a>
+
+        <a th:href="@{/}" class="action-card">
+            <i class='bx bx-home'></i>
+            <span>Ir al inicio</span>
+        </a>
+
+        <a th:href="@{/proyectos/todos}" class="action-card">
+            <i class='bx bx-folder-open'></i>
+            <span>Ver proyectos</span>
+        </a>
+
+    </div>
+
+</section>
+
+<script th:src="@{/js/usuario.js}"></script>
+
+</body>
+</html>

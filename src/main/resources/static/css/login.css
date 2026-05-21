@@ -202,3 +202,14 @@ body {
 .formulario.active {
     animation: fade-in-up 0.8s ease forwards;
 }
+.error-login{
+    color:red;
+    margin-bottom:10px;
+    text-align:center;
+}
+
+.success-login{
+    color:green;
+    margin-bottom:10px;
+    text-align:center;
+}

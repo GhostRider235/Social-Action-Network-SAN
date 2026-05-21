@@ -41,7 +41,7 @@ dependencies {
 
 
 	// Spring AI (OpenAI)
-	implementation("org.springframework.ai:spring-ai-starter-model-openai")
+	implementation("org.springframework.ai:spring-ai-starter-model-ollama")
 
 	// Utilidades y Aspectos
 	implementation("org.springframework.retry:spring-retry")

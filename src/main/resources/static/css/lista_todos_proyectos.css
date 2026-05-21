@@ -1,516 +1,666 @@
-/* ================================
-   🎨 ESTILOS GENERALES
-=================================== */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
+/* =========================================
+   🌎 RESET
+========================================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-/* ================================
-   🔷 ENCABEZADO
-=================================== */
-header {
-    background-color: #0077cc;
-    color: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:
+    linear-gradient(
+        135deg,
+        #f4f7fb,
+        #eef2ff
+    );
+
+    color:#222;
+    min-height:100vh;
 }
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+/* =========================================
+   🔷 HEADER
+========================================= */
+header{
+    background:
+    linear-gradient(
+        90deg,
+        #0f172a,
+        #1e3a8a
+    );
+
+    padding:18px 0;
+
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    box-shadow:
+    0 4px 20px rgba(0,0,0,.15);
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: 500;
+.header-content{
+    max-width:1300px;
+    margin:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 25px;
 }
 
-nav a:hover {
-    text-decoration: underline;
+.logo img{
+    border-radius:12px;
+    transition:.3s;
 }
 
-/* Usuario o login en el header */
-.header-user {
-    background: white;
-    color: #0077cc;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
+.logo img:hover{
+    transform:scale(1.08);
 }
 
-.header-user:hover {
-    background: #e6f3ff;
+nav{
+    display:flex;
+    gap:20px;
 }
 
-/* ================================
-   🔍 BARRA DE BÚSQUEDA
-=================================== */
-.proyectos-container {
-    max-width: 1200px;
-    margin: 60px auto;
-    padding: 20px;
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+    position:relative;
 }
 
-h1 {
-    text-align: center;
-    color: #222;
-    margin-bottom: 30px;
+nav a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-5px;
+
+    width:0%;
+    height:2px;
+
+    background:white;
+    transition:.3s;
 }
 
-.search-bar {
-    text-align: center;
-    margin-bottom: 30px;
+nav a:hover::after{
+    width:100%;
 }
 
-.search-bar form {
-    display: inline-block;
+/* =========================================
+   📦 CONTENEDOR
+========================================= */
+.proyectos-container{
+    max-width:1300px;
+    margin:50px auto;
+    padding:20px;
 }
 
-.search-bar input {
-    width: 300px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1em;
-    transition: all 0.3s ease;
+/* =========================================
+   🏷️ TITULO
+========================================= */
+.proyectos-container h1{
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:35px;
+
+    color:#0f172a;
+
+    font-weight:800;
 }
 
-.search-bar input:focus {
-    border-color: #0077cc;
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 119, 204, 0.2);
+/* =========================================
+   🔍 BUSCADOR
+========================================= */
+.search-bar{
+    margin-bottom:40px;
 }
 
-.search-bar button {
-    background-color: #0077cc;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-left: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+.search-bar form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    justify-content:center;
 }
 
-.search-bar button:hover {
-    background-color: #005fa3;
-    transform: scale(1.05);
+.search-bar input,
+.search-bar select{
+    padding:14px 18px;
+
+    border:none;
+    border-radius:14px;
+
+    background:white;
+
+    min-width:240px;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.08);
+
+    font-size:15px;
+
+    transition:.3s;
 }
 
-/* ================================
-   📦 TARJETAS DE PROYECTOS
-=================================== */
-.projects-grid {
-    display: flex; /* Cambiamos de grid a flex */
-    flex-wrap: wrap; /* Permite que se ajusten a varias filas */
-    gap: 30px;
+.search-bar input:focus,
+.search-bar select:focus{
+    outline:none;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 8px 18px rgba(59,130,246,.25);
 }
 
-/* Fondo con logo y capa difuminada */
-.project-card {
-    flex: 1 1 280px;
-    max-width: 100%;
-    position: relative;
-    background-image: url('ruta-del-logo.jpg');
-    background-size: contain;      /* o 'cover' si quieres que llene la tarjeta */
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;        /* apilar contenido verticalmente */
-    padding: 20px;
-    height: auto;                  /* clave: altura según contenido */
-}   
+.search-bar button{
+    border:none;
 
+    padding:14px 25px;
 
-/* Capa blanca difuminada sobre el logo */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(1.5px);
-    z-index: 1;
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color:white;
+
+    font-weight:700;
+    cursor:pointer;
+
+    transition:.3s;
 }
 
-/* Contenido del proyecto */
-.project-content {
-    position: relative;
-    z-index: 2;
-    padding: 20px;
-    text-align: center;
+.search-bar button:hover{
+    transform:translateY(-3px);
+    box-shadow:
+    0 8px 18px rgba(37,99,235,.35);
 }
 
-.project-card:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+/* =========================================
+   📊 ESTADÍSTICAS
+========================================= */
+.estadisticas-globales{
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    margin-bottom:45px;
 }
 
-.project-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
+.stat-box{
+    background:
+    rgba(255,255,255,.7);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:22px;
+
+    padding:28px;
+
+    text-align:center;
+
+    box-shadow:
+    0 8px 25px rgba(0,0,0,.08);
+
+    transition:.3s;
 }
 
-.project-card h3 {
-    margin: 30px 20px 10px;
-    color: #ffffff;
+.stat-box:hover{
+    transform:translateY(-6px);
 }
 
-.project-card h4 {
-    margin: 0 20px 10px;
-    color: #0077cc;
-    font-weight: 500;
+.stat-box h3{
+    color:#475569;
+    margin-bottom:10px;
 }
 
-.project-card p {
-    margin: 0 20px 15px;
-    color: #ffffff;
-
+.stat-box p{
+    font-size:2rem;
+    font-weight:800;
+    color:#2563eb;
 }
 
-/* ================================
-   🎨 ESTILO UNIFICADO DE BOTONES
-=================================== */
-/* ================================
-   🎨 ESTILO UNIFICADO DE BOTONES
-=================================== */
+/* =========================================
+   🧩 GRID
+========================================= */
+.projects-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(330px,1fr));
+
+    gap:30px;
+}
+
+/* =========================================
+   📌 CARD
+========================================= */
+.project-card{
+    position:relative;
+
+    min-height:480px;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    background-size:75%;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    display:flex;
+    align-items:flex-end;
+
+    transition:.4s;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.12);
+}
+
+.project-card:hover{
+    transform:
+    translateY(-10px)
+    scale(1.02);
+
+    box-shadow:
+    0 18px 40px rgba(0,0,0,.18);
+}
+
+/* =========================================
+   🌑 OVERLAY
+========================================= */
+.overlay{
+    position:absolute;
+    inset:0;
+
+    background:
+    linear-gradient(
+        to top,
+        rgba(0,0,0,.82),
+        rgba(0,0,0,.28)
+    );
+
+    z-index:1;
+}
+
+/* =========================================
+   🏷️ FUNDACION
+========================================= */
+.fundacion-nombre{
+    position:absolute;
+    top:18px;
+    left:18px;
+
+    background:
+    rgba(255,255,255,.15);
+
+    backdrop-filter:blur(8px);
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:30px;
+
+    font-size:.95rem;
+    font-weight:700;
+
+    z-index:3;
+}
+
+/* =========================================
+   📝 CONTENIDO
+========================================= */
+.project-content{
+    position:relative;
+    z-index:2;
+
+    padding:28px;
+
+    width:100%;
+}
+
+.project-content h3{
+    color:white;
+
+    font-size:2rem;
+
+    margin-bottom:14px;
+}
+
+.project-content p{
+    color:#e2e8f0;
+
+    line-height:1.6;
+
+    margin-bottom:22px;
+}
+
+/* =========================================
+   📊 STATS PROYECTO
+========================================= */
+.project-stats{
+    display:flex;
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:25px;
+}
+
+.stat-item{
+    flex:1;
+
+    background:
+    rgba(255,255,255,.12);
+
+    backdrop-filter:blur(8px);
+
+    border-radius:16px;
+
+    padding:14px;
+
+    text-align:center;
+}
+
+.stat-item span{
+    display:block;
+    color:#cbd5e1;
+    margin-bottom:6px;
+}
+
+.stat-item strong{
+    color:white;
+    font-size:1.2rem;
+}
+
+/* =========================================
+   🔘 BOTONES
+========================================= */
+.botones{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.fila-superior{
+    display:flex;
+    gap:12px;
+}
+
 .botones button,
-.donar-btn,
-.postular-btn,
-.recargar-btn {
-    font-family: 'Poppins', Arial, sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    padding: 6px 10px; /* 🔹 Más pequeño y ajustado al texto */
-    white-space: nowrap;
-    text-align: center;
-    display: inline-block;
-    width: auto; /* 🔹 Solo ocupa el espacio necesario */
-    min-width: fit-content;
+.recargar-btn{
+    flex:1;
+
+    border:none;
+
+    padding:13px;
+
+    border-radius:14px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    text-decoration:none;
+    text-align:center;
 }
 
-/* 💚 Donar */
-.donar-btn {
-    background-color: #28a745;
-    color: white;
-}
-.donar-btn:hover {
-    background-color: #1e7e34;
-    transform: scale(1.05);
+.donar-btn{
+    background:#22c55e;
+    color:white;
 }
 
-/* 💛 Postularse */
-.postular-btn {
-    background-color: #ffc107;
-    color: #fff9d5;
-}
-.postular-btn:hover {
-    background-color: #e0a800;
-    transform: scale(1.05);
+.donar-btn:hover{
+    background:#16a34a;
 }
 
-/* 💙 Recargar */
-.recargar-btn {
-    background-color: #3498db;
-    color: #fff;
-    text-decoration: none;
-}
-.recargar-btn:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
-    text-decoration: none;
+.postular-btn{
+    background:#facc15;
+    color:#111827;
 }
 
-
-
-/* ================================
-   📭 MENSAJES Y BOTONES DE REGRESO
-=================================== */
-.no-proyectos {
-    text-align: center;
-    color: #777;
-    margin-top: 50px;
-    font-style: italic;
+.postular-btn:hover{
+    background:#eab308;
 }
 
-.back-button {
-    display: block;
-    text-align: center;
-    margin: 40px auto 0;
-    background-color: #0077cc;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    width: fit-content;
-    transition: background 0.3s ease, transform 0.2s;
+.recargar-btn{
+    background:#3b82f6;
+    color:white;
 }
 
-.back-button:hover {
-    background-color: #005fa3;
-    transform: scale(1.05);
+.recargar-btn:hover{
+    background:#2563eb;
 }
 
-/* ================================
+.botones button:hover,
+.recargar-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* =========================================
+   ❌ MENSAJE
+========================================= */
+.mensaje-no-donaciones{
+    background:
+    rgba(239,68,68,.15);
+
+    color:#fecaca;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    text-align:center;
+}
+
+/* =========================================
+   ⬅ BOTÓN VOLVER
+========================================= */
+.back-button{
+    display:block;
+
+    width:fit-content;
+
+    margin:50px auto 0;
+
+    background:#0f172a;
+
+    color:white;
+
+    padding:14px 24px;
+
+    border-radius:14px;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    transition:.3s;
+}
+
+.back-button:hover{
+    transform:translateY(-3px);
+    background:#1e293b;
+}
+
+/* =========================================
+   📭 NO PROYECTOS
+========================================= */
+.no-proyectos{
+    text-align:center;
+
+    grid-column:1/-1;
+
+    padding:60px;
+
+    background:white;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 8px 25px rgba(0,0,0,.08);
+
+    color:#64748b;
+}
+
+/* =========================================
    ⚙️ MODAL
-=================================== */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+========================================= */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+
+    background:
+    rgba(0,0,0,.6);
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
 }
 
-.modal.show {
-    display: flex;
-    opacity: 1;
-    pointer-events: all;
+.modal-content{
+    width:90%;
+    max-width:450px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    position:relative;
+
+    animation:modalShow .3s ease;
 }
 
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-content h3 {
-    color: #0077cc;
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 20px;
-    color: #888;
-    cursor: pointer;
-}
-
-.close-btn:hover {
-    color: #000;
-}
-
-.saldo-box {
-    background: #f1f8ff;
-    border-radius: 8px;
-    padding: 10px;
-    margin: 10px 0;
-    font-weight: bold;
-    color: #0077cc;
-}
-
-/* ================================
-   🔄 EFECTO DE CARGA
-=================================== */
-.loading {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #0077cc;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 0.8s linear infinite;
-    margin: 20px auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ================================
-   📱 RESPONSIVIDAD
-=================================== */
-@media (max-width: 500px) {
-    .search-bar input {
-        width: 90%;
-        margin-bottom: 10px;
+@keyframes modalShow{
+    from{
+        opacity:0;
+        transform:translateY(20px);
     }
 
-    .botones button {
-        width: 90%;
-        margin: 5px auto;
-        display: block;
-    }
-
-    .modal-content {
-        width: 95%;
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
 }
 
-/* ================================
-   🏷️ NOMBRE DE LA FUNDACIÓN
-=================================== */
-.fundacion-nombre {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 10px 5px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.45);
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-    z-index: 3;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+
+    font-size:1.8rem;
+    cursor:pointer;
 }
 
-/* ================================
-   ⚪ PIE DE PÁGINA
-=================================== */
-footer {
-    text-align: center;
-    background-color: #f1f1f1;
-    padding: 20px;
-    margin-top: 40px;
-    color: #666;
-}
-/* Capa oscura sobre el fondo del proyecto */
-.project-card .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* cortina oscura */
-    z-index: 1; /* debajo del contenido pero sobre el fondo */
-    transition: background 0.3s ease;
-    border-radius: 12px;
+/* =========================================
+   🦶 FOOTER
+========================================= */
+footer{
+    margin-top:70px;
+
+    background:#0f172a;
+
+    color:#cbd5e1;
+
+    text-align:center;
+
+    padding:30px;
 }
 
-/* Contenido del proyecto por encima de la cortina */
-.project-card .project-content {
-    position: relative;
-    z-index: 2; /* siempre encima de overlay */
-    
-}
+/* =========================================
+   📱 RESPONSIVE
+========================================= */
+@media(max-width:768px){
 
-/* Opcional: efecto hover más dramático */
-.project-card:hover .overlay {
-    background: rgba(0, 0, 0, 0.8);
-}
-/* ================================
-   ✨ ANIMACIÓN DE APARICIÓN
-=================================== */
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
+    .proyectos-container h1{
+        font-size:2.2rem;
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+
+    .project-content h3{
+        font-size:1.6rem;
+    }
+
+    .fila-superior{
+        flex-direction:column;
+    }
+
+    .project-stats{
+        flex-direction:column;
+    }
+
+    .search-bar form{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .search-bar input,
+    .search-bar select,
+    .search-bar button{
+        width:100%;
+        max-width:500px;
     }
 }
+/* =========================================
+   🖼️ LOGO DE FONDO MÁS NÍTIDO
+========================================= */
+.logo-bg{
 
-/* Aplica animación al cargar la lista completa */
-.proyectos-container {
-    animation: fadeInUp 0.8s ease forwards;
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:
+    translate(-50%, -50%);
+
+    width:78%;
+    height:78%;
+
+    object-fit:contain;
+
+    /* 🔥 MÁS VISIBLE */
+    opacity:0.35;
+
+    z-index:0;
+
+    pointer-events:none;
+
+    /* 🔥 MEJOR CALIDAD */
+    image-rendering:auto;
+
+    /* 🔥 SOMBRA MÁS SUAVE */
+    filter:
+    drop-shadow(
+        0 0 8px rgba(255,255,255,.08)
+    );
+
+    transition:.4s ease;
 }
 
-/* También puedes animar cada tarjeta individual */
-.project-card {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease forwards;
-    animation-delay: 0.2s;
-}
+/* ✨ HOVER */
+.project-card:hover .logo-bg{
 
-/* Para que las tarjetas aparezcan una tras otra */
-.projects-grid .project-card:nth-child(1) { animation-delay: 0.1s; }
-.projects-grid .project-card:nth-child(2) { animation-delay: 0.2s; }
-.projects-grid .project-card:nth-child(3) { animation-delay: 0.3s; }
-.projects-grid .project-card:nth-child(4) { animation-delay: 0.4s; }
-.projects-grid .project-card:nth-child(5) { animation-delay: 0.5s; }
-.projects-grid .project-card:nth-child(6) { animation-delay: 0.6s; }
-/* Si hay más, puedes continuar con el patrón */
-.vermas-btn {
-  background-color: #1976d2;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
+    transform:
+    translate(-50%, -50%)
+    scale(1.03);
 
-.vermas-btn:hover {
-  background-color: #1565c0;
+    opacity:0.42;
 }
-/* ================================
-   ⚙️ ORGANIZACIÓN DE BOTONES
-=================================== */
-.botones {
-  display: flex;
-  flex-direction: column; /* Columna principal */
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* 🔹 Primera fila (Donar y Postularse) */
-.botones .fila-superior {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-
-/* 🔹 Ajuste para los botones dentro de la fila superior */
-.botones .fila-superior button {
-  flex: 0;              /* ❌ no se expanden */
-  min-width: auto;      /* ❌ sin ancho mínimo forzado */
-  width: fit-content;   /* ✅ se ajustan al texto */
-  padding: 6px 12px;    /* ✅ consistente con el resto */
-}
-
-
-/* 🔹 Botón de recargar abajo, centrado */
-.recargar-btn {
-  align-self: center;
-  width: fit-content; /* 🔹 ocupa solo lo necesario */
-  padding: 6px 12px; /* igual al resto */
-  text-align: center;
-}
-

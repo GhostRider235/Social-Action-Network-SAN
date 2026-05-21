@@ -1,5 +1,23 @@
 package com.proyect.Social_action_networkks.controllers;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.proyect.Social_action_networkks.dto.FundacionDTO;
 import com.proyect.Social_action_networkks.modelo.Donacion;
 import com.proyect.Social_action_networkks.modelo.Fundacion;
@@ -11,24 +29,6 @@ import com.proyect.Social_action_networkks.repository.ProyectoRepository;
 import com.proyect.Social_action_networkks.repository.UsuarioRepository;
 import com.proyect.Social_action_networkks.repository.VoluntarioRepository;
 import com.proyect.Social_action_networkks.servicio.ProyectoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/fundacion")
@@ -36,6 +36,9 @@ public class FundacionController {
 
     @Autowired
     private FundacionRepository fundacionRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ProyectoService proyectoService;
@@ -59,119 +62,107 @@ public class FundacionController {
         return "register_fundacion";
     }
 
-    // Procesar registro
     @PostMapping("/register")
-    public String registrarFundacion(@ModelAttribute FundacionDTO dto, Model model) {
-        if (fundacionRepository.findByCorreo(dto.getCorreo()).isPresent()) {
-            model.addAttribute("error", "El correo ya está registrado");
-            return "register_fundacion";
-        }
+public String registrarFundacion(@ModelAttribute FundacionDTO dto, Model model) {
 
-        if (!dto.getContrasena().equals(dto.getConfirmarContrasena())) {
-            model.addAttribute("error", "Las contraseñas no coinciden");
-            return "register_fundacion";
-        }
-
-        Fundacion fundacion = new Fundacion();
-        fundacion.setNombre(dto.getNombre());
-        fundacion.setDescripcion(dto.getDescripcion());
-        fundacion.setContacto(dto.getContacto());
-        fundacion.setUbicacion(dto.getUbicacion());
-        fundacion.setCorreo(dto.getCorreo());
-        fundacion.setEstado("PENDIENTE");
-
-        // Encriptar contraseña
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        fundacion.setContrasena(encoder.encode(dto.getContrasena()));
-
-        // Subida de logo
-        try {
-            if (dto.getLogo() != null && !dto.getLogo().isEmpty()) {
-                fundacion.setLogo(dto.getLogo().getBytes());
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al subir el logo");
-            return "register_fundacion";
-        }
-
-        fundacionRepository.save(fundacion);
-        return "redirect:/fundacion/login";
+    if (fundacionRepository.findByCorreo(dto.getCorreo()).isPresent()) {
+        model.addAttribute("error", "El correo ya está registrado");
+        return "register_fundacion";
     }
 
-    // Mostrar login
-    @GetMapping("/login")
-    public String mostrarLoginFundacion() {
-        return "login_fundacion";
+    if (!dto.getContrasena().equals(dto.getConfirmarContrasena())) {
+        model.addAttribute("error", "Las contraseñas no coinciden");
+        return "register_fundacion";
     }
 
-    // Procesar login
-    @PostMapping("/login")
-public String loginFundacion(@RequestParam String correo,
-                             @RequestParam String contrasena,
-                             HttpSession session,
-                             Model model) {
+    Fundacion fundacion = new Fundacion();
 
-    Fundacion fundacion = fundacionRepository.findByCorreo(correo).orElse(null);
-    if (fundacion == null) {
-        model.addAttribute("error", "Credenciales incorrectas");
-        return "login_fundacion";
+    fundacion.setNombre(dto.getNombre());
+    fundacion.setDescripcion(dto.getDescripcion());
+    fundacion.setContacto(dto.getContacto());
+    fundacion.setUbicacion(dto.getUbicacion());
+    fundacion.setCorreo(dto.getCorreo());
+
+    fundacion.setEstado("PENDIENTE");
+
+    fundacion.setRol("FUNDACION");
+
+    fundacion.setContrasena(
+    passwordEncoder.encode(dto.getContrasena())
+);
+
+    try {
+
+    if (dto.getLogo() != null
+            && !dto.getLogo().isEmpty()) {
+
+        // 🔹 Nombre único
+        String nombreArchivo =
+                System.currentTimeMillis()
+                + "_"
+                + dto.getLogo().getOriginalFilename();
+
+        // 🔹 Carpeta uploads/logos
+        File carpeta = new File(
+                System.getProperty("user.dir")
+                + "/uploads/logos"
+        );
+
+        // 🔹 Crear carpeta automáticamente
+        carpeta.mkdirs();
+
+        // 🔹 Archivo destino
+        File destino =
+                new File(carpeta, nombreArchivo);
+
+        // 🔹 Guardar imagen
+        dto.getLogo().transferTo(destino);
+
+        // 🔹 Guardar SOLO nombre en Mongo
+        fundacion.setLogo(nombreArchivo);
     }
 
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    if (!encoder.matches(contrasena, fundacion.getContrasena())) {
-        model.addAttribute("error", "Credenciales incorrectas");
-        return "login_fundacion";
-    }
+} catch (Exception e) {
 
-    // 🔹 Validar el estado antes de permitir el ingreso
-    if (fundacion.getEstado() == null || fundacion.getEstado().equalsIgnoreCase("PENDIENTE")) {
-        model.addAttribute("error", "Tu cuenta aún no ha sido validada por el administrador.");
-        return "login_fundacion";
-    }
+    model.addAttribute(
+            "error",
+            "Error al subir el logo"
+    );
 
-    if (fundacion.getEstado().equalsIgnoreCase("RECHAZADA")) {
-        model.addAttribute("error", "Tu registro fue rechazado por el administrador.");
-        return "login_fundacion";
-    }
-
-    // ✅ Solo entra si está aprobada
-    if (fundacion.getEstado().equalsIgnoreCase("APROBADA")) {
-        session.setAttribute("fundacionLogueada", fundacion);
-        return "redirect:/fundacion/dashboard/" + fundacion.getId();
-    }
-
-    model.addAttribute("error", "Estado de cuenta no válido. Contacta con soporte.");
-    return "login_fundacion";
+    return "register_fundacion";
 }
-    // Obtener el logo de una fundación
-    @GetMapping("/{id}/logo")
-    public ResponseEntity<byte[]> obtenerLogo(@PathVariable String id) {
-        Optional<Fundacion> fundacionOpt = fundacionRepository.findById(id);
-        if (fundacionOpt.isPresent() && fundacionOpt.get().getLogo() != null) {
-            byte[] logo = fundacionOpt.get().getLogo();
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG); // o IMAGE_JPEG si tus logos son jpg
+    fundacionRepository.save(fundacion);
 
-            return new ResponseEntity<>(logo, headers, HttpStatus.OK);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    return "redirect:/login";
+}
+
 
     // Dashboard de la fundación
     @GetMapping("/dashboard/{id}")
-public String dashboardFundacion(@PathVariable String id, HttpSession session, Model model) {
-    Fundacion fundacionSesion = (Fundacion) session.getAttribute("fundacionLogueada");
-    
-    if (fundacionSesion == null || !fundacionSesion.getId().equals(id)) {
-        return "redirect:/fundacion/login";
+public String dashboardFundacion(
+        @PathVariable("id") String id,
+        java.security.Principal principal,
+        Model model) {
+
+    Fundacion fundacion = fundacionRepository
+            .findByCorreo(principal.getName())
+            .orElse(null);
+
+    if (fundacion == null ||
+        !fundacion.getId().equals(id)) {
+
+        return "redirect:/login";
     }
 
-    model.addAttribute("fundacion", fundacionSesion);
+    model.addAttribute("fundacion", fundacion);
 
-    List<Proyecto> proyectos = proyectoRepository.findByFundacionId(id);
-    if (proyectos == null) proyectos = new ArrayList<>();
+    List<Proyecto> proyectos =
+            proyectoRepository.findByFundacionId(id);
+
+    if (proyectos == null) {
+        proyectos = new ArrayList<>();
+    }
 
     model.addAttribute("proyectos", proyectos);
     model.addAttribute("nuevoProyecto", new Proyecto());
@@ -182,36 +173,35 @@ public String dashboardFundacion(@PathVariable String id, HttpSession session, M
 
     // Crear nuevo proyecto
     @PostMapping("/proyectos/nuevo")
-    public String crearProyecto(@RequestParam String nombre,
-                                @RequestParam String descripcion,
-                                @RequestParam String fundacionId,
-                                Model model) {
+public String crearProyecto(
+        @RequestParam("nombre") String nombre,
+        @RequestParam("descripcion") String descripcion,
+        java.security.Principal principal,
+        Model model) {
 
-        Fundacion fundacion = fundacionRepository.findById(fundacionId).orElse(null);
-        if (fundacion == null) {
-            model.addAttribute("error", "Fundación no encontrada");
-            return "error";
-        }
+    Fundacion fundacion = fundacionRepository
+            .findByCorreo(principal.getName())
+            .orElse(null);
 
-        Proyecto proyecto = new Proyecto();
-        proyecto.setNombre(nombre);
-        proyecto.setDescripcion(descripcion);
-        proyecto.setFundacionId(fundacionId);
-
-        proyectoService.guardar(proyecto);
-        return "redirect:/fundacion/dashboard/" + fundacionId;
+    if (fundacion == null) {
+        return "redirect:/login";
     }
 
-    // Logout
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/fundacion/login";
-    }
+    Proyecto proyecto = new Proyecto();
+
+    proyecto.setNombre(nombre);
+    proyecto.setDescripcion(descripcion);
+
+    proyecto.setFundacionId(fundacion.getId());
+
+    proyectoService.guardar(proyecto);
+
+    return "redirect:/fundacion/dashboard/" + fundacion.getId();
+}
 
     // Eliminar proyecto (solo si está terminado)
     @PostMapping("/proyectos/eliminar/{id}")
-    public String eliminarProyecto(@PathVariable String id, Model model) {
+public String eliminarProyecto(@PathVariable("id") String id, Model model) {
         Proyecto proyecto = proyectoService.obtenerPorId(id).orElse(null);
         if (proyecto == null) {
             model.addAttribute("error", "Proyecto no encontrado");
@@ -228,16 +218,18 @@ public String dashboardFundacion(@PathVariable String id, HttpSession session, M
     }
 
     @GetMapping("/donaciones/{id}")
-public String verDonacionesFundacion(@PathVariable String id, HttpSession session, Model model) {
-    Fundacion fundacionSesion = (Fundacion) session.getAttribute("fundacionLogueada");
+public String verDonacionesFundacion(
+        @PathVariable("id") String id,
+        java.security.Principal principal,
+        Model model) {
 
-    // Si no hay sesión o no coincide con el ID → redirigir al index
-    if (fundacionSesion == null || !fundacionSesion.getId().equals(id)) {
-        return "redirect:/index";
-    }
+    Fundacion fundacion = fundacionRepository
+            .findByCorreo(principal.getName())
+            .orElse(null);
 
-    Fundacion fundacion = fundacionRepository.findById(id).orElse(null);
-    if (fundacion == null) {
+    if (fundacion == null ||
+        !fundacion.getId().equals(id)) {
+
         return "redirect:/index";
     }
 
@@ -267,11 +259,19 @@ public String verDonacionesFundacion(@PathVariable String id, HttpSession sessio
 }
 
 
-@GetMapping("/voluntarios-todos/{idFundacion}")
-public String verTodosLosVoluntarios(@PathVariable String idFundacion, HttpSession session, Model model) {
-    // ✅ Validar sesión
-    Fundacion fundacionSesion = (Fundacion) session.getAttribute("fundacionLogueada");
-    if (fundacionSesion == null || !fundacionSesion.getId().equals(idFundacion)) {
+    @GetMapping("/voluntarios-todos/{idFundacion}")
+public String verTodosLosVoluntarios(
+        @PathVariable("idFundacion") String idFundacion,
+        java.security.Principal principal,
+        Model model) {
+
+    Fundacion fundacion = fundacionRepository
+            .findByCorreo(principal.getName())
+            .orElse(null);
+
+    if (fundacion == null ||
+        !fundacion.getId().equals(idFundacion)) {
+
         return "redirect:/index";
     }
 
@@ -305,8 +305,7 @@ public String verTodosLosVoluntarios(@PathVariable String idFundacion, HttpSessi
         totalVoluntarios += usuariosData.size();
     }
 
-    // ✅ Pasar todo al modelo
-    model.addAttribute("fundacion", fundacionSesion);
+    model.addAttribute("fundacion", fundacion);
     model.addAttribute("voluntariosPorProyecto", voluntariosPorProyecto);
     model.addAttribute("totalVoluntarios", totalVoluntarios);
 

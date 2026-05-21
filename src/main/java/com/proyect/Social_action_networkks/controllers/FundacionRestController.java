@@ -1,12 +1,20 @@
 package com.proyect.Social_action_networkks.controllers;
 
-import com.proyect.Social_action_networkks.modelo.Fundacion;
-import com.proyect.Social_action_networkks.servicio.FundacionService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.proyect.Social_action_networkks.modelo.Fundacion;
+import com.proyect.Social_action_networkks.servicio.FundacionService;
 
 @RestController
 @RequestMapping("/api/fundaciones")
@@ -21,7 +29,7 @@ public class FundacionRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Fundacion> obtenerPorId(@PathVariable String id) {
+public ResponseEntity<Fundacion> obtenerPorId(@PathVariable("id") String id)  {
         return fundacionService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -33,7 +41,9 @@ public class FundacionRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fundacion> actualizar(@PathVariable String id, @RequestBody Fundacion fundacion) {
+public ResponseEntity<Fundacion> actualizar(
+        @PathVariable("id") String id,
+        @RequestBody Fundacion fundacion) {
         return fundacionService.obtenerPorId(id)
                 .map(f -> {
                     fundacion.setId(id);
@@ -43,7 +53,7 @@ public class FundacionRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable String id) {
+public ResponseEntity<Void> eliminar(@PathVariable("id") String id) {
         if (fundacionService.obtenerPorId(id).isPresent()) {
             fundacionService.eliminar(id);
             return ResponseEntity.noContent().build();

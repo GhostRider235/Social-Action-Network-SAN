@@ -2,113 +2,316 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
   <title>Lista de Proyectos</title>
 
-  <link rel="stylesheet" th:href="@{/css/lista_todos_proyectos.css}">
-  <script th:src="@{/js/lista_todos_proyectos.js}" defer></script>
+  <link rel="stylesheet"
+        th:href="@{/css/lista_todos_proyectos.css}">
+
+  <script th:src="@{/js/lista_todos_proyectos.js}"
+          defer></script>
 </head>
+
 <body>
 
+<!-- HEADER -->
 <header>
+
   <div class="container header-content">
+
     <div class="logo">
+
       <a th:href="@{/index}">
-        <img th:src="@{/css/logo.jpeg}" alt="Logo" style="height:50px;">
+        <img th:src="@{/css/logo.jpeg}"
+             alt="Logo"
+             style="height:50px;">
       </a>
+
     </div>
+
     <nav>
-      <a th:href="@{/index}">Inicio</a>
-      
+
+      <a th:href="@{/index}">
+        Inicio
+      </a>
+
     </nav>
+
   </div>
+
 </header>
 
+<!-- CONTENEDOR -->
 <section class="proyectos-container">
-  <h1>Lista de Proyectos</h1>
 
-  <!-- 🔍 Barra de búsqueda -->
+  <h1>
+    Lista de Proyectos
+  </h1>
+
+  <!-- 🔍 BUSCADOR -->
   <div class="search-bar">
-    <form th:action="@{/proyectos/todos}" method="get">
-      <input type="text" name="nombre" th:value="${nombre}" placeholder="Buscar proyecto por nombre...">
-      <button type="submit">Buscar</button>
+
+    <form th:action="@{/proyectos/todos}"
+          method="get">
+
+      <!-- Buscar -->
+      <input type="text"
+             name="busqueda"
+             th:value="${busqueda}"
+             placeholder="Buscar proyecto o fundación...">
+
+      <!-- Filtro -->
+      <select name="filtro">
+
+        <option value="">
+          -- Filtrar por --
+        </option>
+
+        <option value="masDonaciones"
+                th:selected="${filtro == 'masDonaciones'}">
+
+          💰 Más donaciones
+
+        </option>
+
+        <option value="menosDonaciones"
+                th:selected="${filtro == 'menosDonaciones'}">
+
+          📉 Menos donaciones
+
+        </option>
+
+        <option value="masVoluntarios"
+                th:selected="${filtro == 'masVoluntarios'}">
+
+          🤝 Más voluntarios
+
+        </option>
+
+        <option value="menosVoluntarios"
+                th:selected="${filtro == 'menosVoluntarios'}">
+
+          👤 Menos voluntarios
+
+        </option>
+
+      </select>
+
+      <button type="submit">
+        Buscar
+      </button>
+
     </form>
+
   </div>
 
-  <!-- 📋 Lista de proyectos -->
-  <div class="projects-grid">
-    <div class="no-proyectos" th:if="${proyectos.isEmpty()}">
-      <p>No se encontraron proyectos.</p>
+  <!-- 📊 ESTADÍSTICAS -->
+  <div class="estadisticas-globales">
+
+    <div class="stat-box">
+
+      <h3>Total proyectos</h3>
+
+      <p th:text="${proyectos.size()}">
+        0
+      </p>
+
     </div>
 
-    <!-- 🧩 Tarjeta individual -->
-    <div class="project-card"
-         th:each="proyecto : ${proyectos}"
-         th:attr="data-proyecto-id=${proyecto.id}, data-fundacion-id=${proyecto.fundacionId}"
-         th:style="|background-image: url('${fundacionIdALogo[proyecto.fundacionId]}');|">
+    <div class="stat-box">
 
-          <!-- 🌑 Capa oscura sobre el logo -->
-  <div class="overlay"></div>
+      <h3>Total donaciones</h3>
 
-      <!-- 🏷️ Nombre de la fundación -->
-      <div class="fundacion-nombre" th:text="${fundacionIdANombre[proyecto.fundacionId]}">
-        Nombre Fundación
-      </div>
+      <p th:text="${totalGeneralDonaciones}">
+        $0
+      </p>
 
-      <!-- Contenido del proyecto -->
-      <div class="project-content">
-        <h3 th:text="${proyecto.nombre}">Nombre del Proyecto</h3>
-        <p th:text="${proyecto.descripcion}">Descripción del Proyecto</p>
+    </div>
 
-        <!-- ⚙️ Botones -->
-        <div class="botones">
-  <div class="fila-superior">
-    <button th:if="${proyecto.recibirDonaciones}"
-            class="donar-btn"
-            onclick="abrirModal('donar', this)">
-      💰 Donar
-    </button>
+    <div class="stat-box">
 
-    <button class="postular-btn"
-            onclick="abrirModal('voluntario', this)">
-      🤝 Postularse
-    </button>
+      <h3>Total voluntarios</h3>
+
+      <p th:text="${totalGeneralVoluntarios}">
+        0
+      </p>
+
+    </div>
+
   </div>
 
-  <a th:if="${proyecto.recibirDonaciones}"
-     th:href="@{/recarga}"
-     class="recargar-btn">
-    💳 Recargar saldo
+  <!-- 📋 LISTA -->
+  <div class="projects-grid">
+
+    <!-- SIN PROYECTOS -->
+    <div class="no-proyectos"
+         th:if="${proyectos.isEmpty()}">
+
+      <p>
+        No se encontraron proyectos.
+      </p>
+
+    </div>
+
+    <!-- TARJETA -->
+    <div class="project-card"
+
+     th:each="proyecto : ${proyectos}"
+
+     th:attr="data-proyecto-id=${proyecto.id},
+              data-fundacion-id=${proyecto.fundacionId}">
+
+    <!-- 🖼️ LOGO DE FONDO -->
+    <img class="logo-bg"
+         th:src="${fundacionIdALogo[proyecto.fundacionId]}"
+         alt="Logo Fundación">
+
+
+      <!-- Overlay -->
+      <div class="overlay"></div>
+
+      <!-- Nombre fundación -->
+      <div class="fundacion-nombre"
+
+           th:text="${fundacionIdANombre[proyecto.fundacionId]}">
+
+        Nombre Fundación
+
+      </div>
+
+      <!-- CONTENIDO -->
+      <div class="project-content">
+
+        <!-- Nombre -->
+        <h3 th:text="${proyecto.nombre}">
+          Nombre del Proyecto
+        </h3>
+
+        <!-- Descripción -->
+        <p th:text="${proyecto.descripcion}">
+          Descripción del Proyecto
+        </p>
+
+        <!-- 📊 STATS -->
+        <div class="project-stats">
+
+          <!-- Donaciones -->
+          <div class="stat-item">
+
+            <span>
+              💰 Recaudado:
+            </span>
+
+            <strong th:text="${dineroPorProyecto[proyecto.id]}">
+              $0
+            </strong>
+
+          </div>
+
+          <!-- Voluntarios -->
+          <div class="stat-item">
+
+            <span>
+              🤝 Voluntarios:
+            </span>
+
+            <strong th:text="${voluntariosPorProyecto[proyecto.id]}">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+        <!-- BOTONES -->
+        <div class="botones">
+
+          <div class="fila-superior">
+
+            <!-- DONAR -->
+            <button th:if="${proyecto.recibirDonaciones}"
+                    class="donar-btn"
+                    onclick="abrirModal('donar', this)">
+
+              💰 Donar
+
+            </button>
+
+            <!-- VOLUNTARIO -->
+            <button class="postular-btn"
+                    onclick="abrirModal('voluntario', this)">
+
+              🤝 Postularse
+
+            </button>
+
+          </div>
+
+          <!-- RECARGAR -->
+          <a th:if="${proyecto.recibirDonaciones}"
+             th:href="@{/recarga}"
+             class="recargar-btn">
+
+            💳 Recargar saldo
+
+          </a>
+
+          <!-- NO DONACIONES -->
+          <p th:if="${!proyecto.recibirDonaciones}"
+             class="mensaje-no-donaciones">
+
+            ❌ Este proyecto no acepta donaciones actualmente.
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- VOLVER -->
+  <a th:href="@{/index}"
+     class="back-button">
+
+    ⬅ Volver al inicio
+
   </a>
 
-  <p th:if="${!proyecto.recibirDonaciones}"
-     class="mensaje-no-donaciones">
-    ❌ Este proyecto no acepta donaciones actualmente.
-  </p>
-</div>
-
-
-
-      </div>
-    </div>
-  </div>
-
-  <a th:href="@{/index}" class="back-button">⬅ Volver al inicio</a>
 </section>
 
-<!-- 🪟 Modal -->
-<div id="modal" class="modal">
+<!-- MODAL -->
+<div id="modal"
+     class="modal">
+
   <div class="modal-content">
-    <span class="close-btn" onclick="cerrarModal()">&times;</span>
+
+    <span class="close-btn"
+          onclick="cerrarModal()">
+
+      &times;
+
+    </span>
+
     <div id="modal-body"></div>
+
   </div>
+
 </div>
 
+<!-- FOOTER -->
 <footer>
-  <p>&copy; 2025 Foundation Action Network | Todos los derechos reservados</p>
+
+  <p>
+    &copy; 2026 Foundation Action Network |
+    Todos los derechos reservados
+  </p>
+
 </footer>
-<script>
-  
-</script>
+
 </body>
 </html>

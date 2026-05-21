@@ -10,9 +10,14 @@ import org.springframework.stereotype.Repository;
 public interface VoluntarioRepository extends MongoRepository<Voluntario, String> {
     List<Voluntario> findByProyectoId(String proyectoId);
     boolean existsByUsuarioIdAndProyectoId(String usuarioId, String proyectoId);
-    // ✅ Opcional: Buscar todos los voluntarios de un usuario
     List<Voluntario> findByUsuarioId(String usuarioId);
     List<Voluntario> findByFundacionId(String fundacionId);
+
+
+    long countByFundacionIdAndEstado(
+        String fundacionId,
+        String estado
+);
 
 
 

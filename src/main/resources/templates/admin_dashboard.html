@@ -6,6 +6,7 @@
   <title>Panel de Admin</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
   <link th:href="@{/css/admin_dashboard.css}" rel="stylesheet">
+  <link th:href="@{/css/admin_chatbot.css}" rel="stylesheet">
 </head>
 <body>
 
@@ -35,10 +36,17 @@
     </div>
   </div>
   <div class="sidebar-footer">
-    <a th:href="@{/logout}" class="logout-btn">
-      <i class='bx bx-log-out'></i><span>Cerrar sesión</span>
-    </a>
-  </div>
+
+  <form th:action="@{/logout}" method="post">
+
+    <button type="submit" class="logout-btn">
+      <i class='bx bx-log-out'></i>
+      Cerrar sesión
+    </button>
+
+  </form>
+
+</div>
 </div>
 
 <!-- Main Content -->
@@ -49,12 +57,79 @@
     <button class="toggle-sidebar" id="toggleSidebar"><i class='bx bx-menu'></i></button>
   </div>
 
-  <div class="welcome-section">
-    <h2>Panel Principal del Administrador</h2>
-    <p>Desde aquí puedes gestionar las fundaciones, aprobar recargas y supervisar todas las operaciones del sistema.</p>
-    <p>Usa el menú lateral para acceder a las secciones correspondientes.</p>
-  </div>
+    <div class="dashboard-container">
+
+
+        <iframe
+                title="tablero de proyecto de aula"
+                width="100%"
+                height="700"
+                src="https://app.powerbi.com/view?r=eyJrIjoiMzA5NGI5ZDQtYjRjZC00NTY2LTljNGQtYmM4YjlkMTExYmY2IiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9"
+                frameborder="0"
+                allowfullscreen="true">
+        </iframe>
+
+    </div>
+</div>
+<!-- ================= CHATBOT ADMIN ================= -->
+
+<div id="admin-chatbot">
+
+    <!-- Botón flotante -->
+    <div id="admin-chat-toggle" onclick="toggleChat()">
+        🤖
+    </div>
+
+    <!-- Ventana -->
+    <div id="admin-chat-window">
+
+        <!-- Header -->
+        <div id="admin-chat-header">
+
+            <div class="chat-title">
+                🛡️ Asistente Admin FAN
+            </div>
+
+            <button onclick="toggleChat()">✖</button>
+
+        </div>
+
+        <!-- Mensajes -->
+        <div id="admin-chat-body">
+
+            <div id="admin-mensajes">
+
+                <div class="admin-message admin-bot">
+                    Hola Admin 👋<br>
+                    Soy el asistente privado de administración.
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Input -->
+        <div id="admin-chat-input">
+
+            <input
+                type="text"
+                id="admin-inputMensaje"
+                placeholder="Escribe una orden..."
+                autocomplete="off"
+            />
+
+            <button onclick="enviarMensaje()">
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script th:src="@{/js/admin_chat.js}"></script>
 </body>
 </html>

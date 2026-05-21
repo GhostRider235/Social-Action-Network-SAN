@@ -1,5 +1,20 @@
 package com.proyect.Social_action_networkks.controllers;
 
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.proyect.Social_action_networkks.dto.DonacionDTO;
 import com.proyect.Social_action_networkks.modelo.Donacion;
 import com.proyect.Social_action_networkks.modelo.Fundacion;
@@ -9,15 +24,6 @@ import com.proyect.Social_action_networkks.servicio.DonacionService;
 import com.proyect.Social_action_networkks.servicio.FundacionService;
 import com.proyect.Social_action_networkks.servicio.ProyectoService;
 import com.proyect.Social_action_networkks.servicio.UsuarioServicio;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/donaciones")
@@ -37,42 +43,106 @@ public class DonacionController {
 
     // Aprobar donación (redirección a detalle proyecto)
     @PostMapping("/aprobar/{id}")
-    public String aprobarDonacion(@PathVariable String id) {
-        Optional<Donacion> donacionOpt = donacionService.obtenerPorId(id);
-        if (donacionOpt.isPresent()) {
-            Donacion donacion = donacionOpt.get();
-            donacion.setEstado("APROBADA");
-            donacionService.guardar(donacion);
-            // ✅ Cambiado:
+public String aprobarDonacion(@PathVariable("id") String id) {
+
+    Optional<Donacion> donacionOpt = donacionService.obtenerPorId(id);
+
+    if (donacionOpt.isPresent()) {
+
+        Donacion donacion = donacionOpt.get();
+
+        // Evitar aprobar dos veces
+        if ("APROBADA".equalsIgnoreCase(donacion.getEstado())) {
             return "redirect:/proyectos/ver/" + donacion.getProyectoId();
         }
-        return "redirect:/"; // fallback
+
+        donacion.setEstado("APROBADA");
+
+        // Buscar fundación
+        Optional<Fundacion> fundacionOpt =
+                fundacionService.obtenerPorId(donacion.getFundacionId());
+
+        if (fundacionOpt.isPresent()) {
+
+            Fundacion fundacion = fundacionOpt.get();
+
+            // Si fondos es null
+            if (fundacion.getFondos() == null) {
+                fundacion.setFondos(BigDecimal.ZERO);
+            }
+
+            // Sumar donación
+            fundacion.setFondos(
+                    fundacion.getFondos().add(donacion.getMonto())
+            );
+
+            // Guardar fundación
+            fundacionService.guardar(fundacion);
+        }
+
+        // Guardar donación
+        donacionService.guardar(donacion);
+
+        return "redirect:/proyectos/ver/" + donacion.getProyectoId();
     }
+
+    return "redirect:/";
+}
 
     //Rechazar donacion
     @PostMapping("/rechazar/{id}")
-    public String rechazarDonacion(@PathVariable String id) {
-        Optional<Donacion> donacionOpt = donacionService.obtenerPorId(id);
-        if (donacionOpt.isPresent()) {
-            Donacion donacion = donacionOpt.get();
-            donacion.setEstado("RECHAZADA");
-            donacionService.guardar(donacion);
-            // ✅ Cambiado:
-            return "redirect:/proyectos/ver/" + donacion.getProyectoId();
+public String rechazarDonacion(@PathVariable("id") String id) {
+
+    Optional<Donacion> donacionOpt = donacionService.obtenerPorId(id);
+
+    if (donacionOpt.isPresent()) {
+
+        Donacion donacion = donacionOpt.get();
+
+        donacion.setEstado("RECHAZADA");
+
+        // DEVOLVER DINERO AL USUARIO
+        Usuario usuario = usuarioService
+                .obtenerPorId(donacion.getUsuarioId())
+                .orElse(null);
+
+        if (usuario != null) {
+
+            usuario.setSaldo(
+                    usuario.getSaldo().add(donacion.getMonto())
+            );
+
+            usuarioService.guardar(usuario);
         }
-        return "redirect:/"; // fallback
+
+        // Guardar donación
+        donacionService.guardar(donacion);
+
+        return "redirect:/proyectos/ver/" + donacion.getProyectoId();
     }
 
-    // Guardar donación (opcional para formulario con AJAX)
+    return "redirect:/";
+}
 @PostMapping("/guardar")
 @ResponseBody
-public Map<String, Object> guardarDonacion(@RequestBody DonacionDTO donacionDTO, HttpSession session) {
+public Map<String, Object> guardarDonacion(@RequestBody DonacionDTO donacionDTO,
+                                            Principal principal) {
+
     Map<String, Object> response = new HashMap<>();
-    Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
+
+    if (principal == null) {
+        response.put("success", false);
+        response.put("mensaje", "Usuario no autenticado");
+        return response;
+    }
+
+    Usuario usuario = usuarioService
+            .findByEmail(principal.getName())
+            .orElse(null);
 
     if (usuario == null) {
         response.put("success", false);
-        response.put("mensaje", "Usuario no logueado");
+        response.put("mensaje", "Usuario no registrado");
         return response;
     }
 
@@ -82,19 +152,16 @@ public Map<String, Object> guardarDonacion(@RequestBody DonacionDTO donacionDTO,
         return response;
     }
 
-    // Descontar saldo
+    // descontar saldo
     usuario.setSaldo(usuario.getSaldo().subtract(donacionDTO.getMonto()));
     usuarioService.guardar(usuario);
-    session.setAttribute("usuarioLogueado", usuario);
 
-    // Buscar entidades relacionadas
-    Optional<Fundacion> fundacionOpt = fundacionService.obtenerPorId(donacionDTO.getFundacionId());
-    Optional<Proyecto> proyectoOpt = proyectoService.obtenerPorId(donacionDTO.getProyectoId());
+    Optional<Fundacion> fundacionOpt =
+            fundacionService.obtenerPorId(donacionDTO.getFundacionId());
 
-    Fundacion fundacion = fundacionOpt.orElse(null);
-    Proyecto proyecto = proyectoOpt.orElse(null);
+    Optional<Proyecto> proyectoOpt =
+            proyectoService.obtenerPorId(donacionDTO.getProyectoId());
 
-    // Crear donación
     Donacion donacion = new Donacion();
     donacion.setUsuarioId(usuario.getId());
     donacion.setProyectoId(donacionDTO.getProyectoId());
@@ -104,34 +171,29 @@ public Map<String, Object> guardarDonacion(@RequestBody DonacionDTO donacionDTO,
     donacion.setFecha(new Date());
     donacion.setEstado("PENDIENTE");
 
-    // ✅ Setear datos del usuario
     donacion.setNombreUsuario(usuario.getNombre());
     donacion.setCorreoUsuario(usuario.getEmail());
     donacion.setTelefonoUsuario(usuario.getTelefono());
 
-    // ✅ Setear datos de la fundación y proyecto (si existen)
-    if (fundacion != null) {
-        donacion.setNombreFundacion(fundacion.getNombre());
-        donacion.setFundacion(fundacion);
-    }
+    fundacionOpt.ifPresent(f -> {
+        donacion.setNombreFundacion(f.getNombre());
+        donacion.setFundacion(f);
+    });
 
-    if (proyecto != null) {
-        donacion.setNombreProyecto(proyecto.getNombre());
-        donacion.setProyecto(proyecto);
-    }
+    proyectoOpt.ifPresent(p -> {
+        donacion.setNombreProyecto(p.getNombre());
+        donacion.setProyecto(p);
+    });
 
     donacion.setUsuario(usuario);
 
-    // Guardar donación
     donacionService.guardar(donacion);
 
     response.put("success", true);
     response.put("donacionId", donacion.getId());
+
     return response;
 }
-
-
-
 
     // Convertir Donacion → DonacionDTO
     private DonacionDTO convertirADTO(Donacion donacion) {

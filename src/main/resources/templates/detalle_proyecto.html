@@ -32,9 +32,24 @@
             </p>
 
             <p><strong>Estado:</strong>
-                <span th:text="${proyecto.estado}" 
-                      th:classappend="${proyecto.estado == 'ACTIVO'} ? 'badge bg-success' : 'badge bg-secondary'">
-                </span>
+            <span th:text="${proyecto.estado}" 
+          th:classappend="${proyecto.estado == 'ACTIVO'} ? 'badge bg-success' : 'badge bg-secondary'">
+            </span>
+            </p>
+
+            <p>
+                <strong>Voluntarios aprobados:</strong>
+                <span th:text="${cantidadVoluntarios}">0</span>
+            </p>
+
+            <p>
+    <strong>Donaciones aprobadas:</strong>
+    <span th:text="${cantidadDonaciones}">0</span>
+            </p>
+
+            <p>
+    <strong>Total recaudado:</strong>
+    <span th:text="${totalRecaudado} + ' $'">0 $</span>
             </p>
 
             <p><strong>Fecha inicio:</strong>

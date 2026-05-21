@@ -1,10 +1,14 @@
 let saldoUsuario = 0;
 
 // Obtener saldo del usuario
-fetch("/usuarios/saldo", { credentials: "include" })
-  .then(res => res.json())
-  .then(data => saldoUsuario = parseFloat(data))
-  .catch(err => console.warn(err.message));
+fetch("/api/usuarios/saldo", { credentials: "include" })
+  .then(res => res.text())
+  .then(data => {
+    saldoUsuario = parseFloat(data) || 0;
+  })
+  .catch(() => {
+    saldoUsuario = 0;
+  });
 
 const modal = document.getElementById("modal");
 const modalContent = document.querySelector(".modal-content");

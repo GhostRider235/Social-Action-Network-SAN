@@ -1,42 +1,32 @@
 package com.proyect.Social_action_networkks.controllers;
 
-import com.proyect.Social_action_networkks.modelo.Fundacion;
-import com.proyect.Social_action_networkks.modelo.Usuario;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.proyect.Social_action_networkks.modelo.Usuario;
 
 @Controller
 public class HomeController {
 
     @GetMapping({"", "/", "/index"})
-    public String index(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
-        Fundacion fundacion = (Fundacion) session.getAttribute("fundacionLogueada");
+    public String index(Authentication auth, Model model) {
 
-        if (usuario != null) {
-            // ✅ Enviamos el usuario logueado al modelo
+        if (auth != null &&
+            auth.isAuthenticated() &&
+            !(auth instanceof AnonymousAuthenticationToken)) {
+
+            Usuario usuario = (Usuario) auth.getPrincipal();
+
             model.addAttribute("usuarioLogueado", usuario);
 
-            if ("ADMIN".equalsIgnoreCase(usuario.getTipo())) {
+            if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
                 return "redirect:/admin_dashboard";
-            } else {
-                return "index"; // Carga la plantilla index.html
             }
         }
 
-        if (fundacion != null) {
-            model.addAttribute("fundacionLogueada", fundacion);
-
-            if ("APROBADA".equalsIgnoreCase(fundacion.getEstado())) {
-                return "fundacion_dashboard";
-            } else {
-                model.addAttribute("mensaje", "Tu cuenta aún no ha sido aprobada");
-                return "index";
-            }
-        }
-
-        return "index"; // Para visitantes
+        return "index";
     }
 }

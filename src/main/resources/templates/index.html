@@ -31,7 +31,16 @@
 
             <!-- Login / Logout profesional -->
             <a th:if="${usuarioLogueado == null}" th:href="@{/login}">Login</a>
-            <a th:if="${usuarioLogueado != null}" th:href="@{/logout}">Cerrar sesión</a>
+            <form th:if="${usuarioLogueado != null}"
+      th:action="@{/logout}"
+      method="post"
+      style="display:inline;">
+
+    <button type="submit" class="logout-link">
+        Cerrar sesión
+    </button>
+
+</form>
 
             <span th:if="${usuarioLogueado != null}" class="bienvenida">
                 👤 <strong th:text="${usuarioLogueado.nombre}"></strong>
@@ -141,7 +150,14 @@
         <p>&copy; 2026 FAN. Todos los derechos reservados.</p>
     </div>
 </footer>
-<!-- CHATBOT -->
+
+<!-- ================= CHATBOT ================= -->
+
+<!-- Usuario logueado -->
+<input type="hidden"
+       id="usuarioActual"
+       th:value="${usuarioLogueado != null ? usuarioLogueado.nombre : 'Invitado'}">
+
 <div id="chatbot">
 
     <!-- Botón flotante -->
@@ -154,24 +170,51 @@
 
         <!-- Header -->
         <div id="chat-header">
-            <span>Asistente FAN</span>
+            <div class="chat-title">
+                🤖 Asistente FAN
+            </div>
+
             <button onclick="toggleChat()">✖</button>
         </div>
 
         <!-- Mensajes -->
         <div id="chat-body">
-            <div id="mensajes"></div>
+            <div id="mensajes">
+
+                <!-- Mensaje inicial -->
+                <div class="mensaje ia">
+                    ¡Hola! 👋<br>
+                    Soy el asistente oficial de FAN.<br>
+                    ¿Cómo puedo ayudarte?
+                </div>
+
+            </div>
         </div>
 
         <!-- Input -->
         <div id="chat-input">
-            <input type="text" id="inputMensaje" placeholder="Escribe tu mensaje..." />
-            <button onclick="enviarMensaje()">➤</button>
+
+            <input
+                    type="text"
+                    id="inputMensaje"
+                    placeholder="Escribe tu mensaje..."
+                    autocomplete="off"
+            />
+
+            <button onclick="enviarMensaje()">
+                ➤
+            </button>
+
         </div>
 
     </div>
 
 </div>
+
+<!-- MARKDOWN -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script th:src="@{/js/index.js}"></script>
 
 <script th:src="@{/js/index.js}"></script>
 </body>

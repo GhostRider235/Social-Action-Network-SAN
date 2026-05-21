@@ -1,5 +1,27 @@
 package com.proyect.Social_action_networkks.controllers;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.proyect.Social_action_networkks.dto.VoluntarioDTO;
 import com.proyect.Social_action_networkks.modelo.Donacion;
 import com.proyect.Social_action_networkks.modelo.Proyecto;
@@ -11,17 +33,9 @@ import com.proyect.Social_action_networkks.repository.UsuarioRepository;
 import com.proyect.Social_action_networkks.repository.VoluntarioRepository;
 import com.proyect.Social_action_networkks.servicio.ProyectoService;
 import com.proyect.Social_action_networkks.servicio.VoluntarioService;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/proyectos")
@@ -47,7 +61,8 @@ public class ProyectoController {
 
     // 🔹 Listar proyectos de una fundación
     @GetMapping("/fundacion/{fundacionId}")
-    public String listarProyectos(@PathVariable String fundacionId,
+public String listarProyectos(
+        @PathVariable("fundacionId") String fundacionId,
                                   @RequestParam(name = "busqueda", required = false) String busqueda,
                                   Model model) {
         List<Proyecto> proyectos = (busqueda != null && !busqueda.trim().isEmpty())
@@ -62,7 +77,8 @@ public class ProyectoController {
 
     // 🔹 Formulario nuevo proyecto
     @GetMapping("/nuevo/{fundacionId}")
-    public String formularioNuevoProyecto(@PathVariable String fundacionId, Model model) {
+public String formularioNuevoProyecto(
+        @PathVariable("fundacionId") String fundacionId, Model model) {
         Proyecto proyecto = new Proyecto();
         proyecto.setFundacionId(fundacionId);
         proyecto.setVoluntariosIds(new ArrayList<>());
@@ -92,7 +108,8 @@ public class ProyectoController {
 
     // 🔹 Editar proyecto
     @GetMapping("/editar/{id}")
-    public String editarProyecto(@PathVariable String id, Model model) {
+public String editarProyecto(
+        @PathVariable("id") String id, Model model) {
         Proyecto proyecto = proyectoService.obtenerPorId(id).orElse(null);
         if (proyecto == null) {
             model.addAttribute("error", "El proyecto no fue encontrado");
@@ -122,7 +139,8 @@ public class ProyectoController {
 
     // 🔹 Terminar proyecto
     @PostMapping("/terminar/{id}")
-    public String terminarProyecto(@PathVariable String id, Model model) {
+public String terminarProyecto(
+        @PathVariable("id") String id, Model model) {
         Proyecto proyecto = proyectoService.obtenerPorId(id).orElse(null);
         if (proyecto == null) {
             model.addAttribute("error", "El proyecto no fue encontrado");
@@ -141,48 +159,131 @@ public class ProyectoController {
     }
 
     // 🔹 Ver detalles del proyecto (solo fundación, mostrando voluntarios en espera o aprobados)
-@GetMapping("/ver/{id}")
-public String verProyecto(@PathVariable String id, Model model, HttpSession session) {
-    Proyecto proyecto = proyectoService.obtenerPorId(id).orElse(null);
+    @GetMapping("/ver/{id}")
+public String verProyecto(
+        @PathVariable("id") String id,
+        Model model,
+        HttpSession session) {
+
+    Proyecto proyecto = proyectoService
+            .obtenerPorId(id)
+            .orElse(null);
+
     if (proyecto == null) {
-        model.addAttribute("error", "El proyecto no fue encontrado");
+        model.addAttribute(
+                "error",
+                "El proyecto no fue encontrado"
+        );
+
         return "error";
     }
 
-    // Donaciones con usuarios, excluyendo las rechazadas
-    List<Donacion> donaciones = donacionRepository.findByProyectoId(id).stream()
-            .filter(d -> !"RECHAZADA".equalsIgnoreCase(d.getEstado())) // <-- filtra rechazadas
+    // 🔹 Donaciones con usuarios, excluyendo rechazadas
+    List<Donacion> donaciones =
+            donacionRepository
+            .findByProyectoId(id)
+            .stream()
+            .filter(d ->
+                    !"RECHAZADA"
+                    .equalsIgnoreCase(d.getEstado()))
             .collect(Collectors.toList());
 
-    Map<Donacion, Usuario> donacionesConUsuarios = new LinkedHashMap<>();
+    Map<Donacion, Usuario> donacionesConUsuarios =
+            new LinkedHashMap<>();
+
     for (Donacion donacion : donaciones) {
-        usuarioRepository.findById(donacion.getUsuarioId())
-                .ifPresent(usuario -> donacionesConUsuarios.put(donacion, usuario));
+
+        usuarioRepository
+                .findById(donacion.getUsuarioId())
+                .ifPresent(usuario ->
+                        donacionesConUsuarios.put(
+                                donacion,
+                                usuario
+                        )
+                );
     }
 
-    // 🔹 Filtrar solo voluntarios en espera o aprobados
-    List<Voluntario> voluntariosList = voluntarioService.obtenerPorProyecto(id).stream()
-            .filter(v -> v.getEstado().equalsIgnoreCase("Pendiente") ||
-                         v.getEstado().equalsIgnoreCase("Aprobado"))
+    // 🔹 Voluntarios pendientes o aprobados
+    List<Voluntario> voluntariosList =
+            voluntarioService
+            .obtenerPorProyecto(id)
+            .stream()
+            .filter(v ->
+                    v.getEstado()
+                    .equalsIgnoreCase("Pendiente")
+                    ||
+                    v.getEstado()
+                    .equalsIgnoreCase("Aprobado"))
             .collect(Collectors.toList());
 
-    // Convertir a DTO
-    List<VoluntarioDTO> voluntarios = voluntariosList.stream()
+    // 🔹 Convertir a DTO
+    List<VoluntarioDTO> voluntarios =
+            voluntariosList
+            .stream()
             .map(this::convertirADTO)
             .collect(Collectors.toList());
 
-    model.addAttribute("proyecto", proyecto);
-    model.addAttribute("donacionesConUsuarios", donacionesConUsuarios);
-    model.addAttribute("voluntarios", voluntarios);
+    // 🔹 Cantidad de voluntarios aprobados
+    long cantidadVoluntarios =
+            voluntarioRepository
+            .countByFundacionIdAndEstado(
+                    proyecto.getFundacionId(),
+                    "Aprobado"
+            );
+    // 🔹 Cantidad de donaciones aprobadas
+    long cantidadDonaciones =
+        donacionRepository
+        .countByFundacionIdAndEstado(
+                proyecto.getFundacionId(),
+                "APROBADA"
+        );
 
-    // ✅ Ya no se valida el rol, porque esta vista es exclusiva de fundaciones
+// 🔹 Total recaudado
+    BigDecimal totalRecaudado = donacionRepository
+        .findByFundacionIdAndEstado(
+                proyecto.getFundacionId(),
+                "APROBADA"
+        )
+        .stream()
+        .map(Donacion::getMonto)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);        
+
+    // 🔹 Enviar datos al HTML
+    model.addAttribute("proyecto", proyecto);
+
+    model.addAttribute(
+            "donacionesConUsuarios",
+            donacionesConUsuarios
+    );
+
+    model.addAttribute(
+            "voluntarios",
+            voluntarios
+    );
+
+    model.addAttribute(
+            "cantidadVoluntarios",
+            cantidadVoluntarios
+    );
+
+    model.addAttribute(
+        "cantidadDonaciones",
+        cantidadDonaciones
+);
+
+    model.addAttribute(
+        "totalRecaudado",
+        totalRecaudado
+);
+
     return "detalle_proyecto";
 }
 
 
 // 🔹 Aprobar voluntario
-@PostMapping("/voluntarios/aprobar/{id}")
-public String aprobarVoluntario(@PathVariable String id) {
+    @PostMapping("/voluntarios/aprobar/{id}")
+public String aprobarVoluntario(
+        @PathVariable("id") String id) {
     Voluntario voluntario = voluntarioService.obtenerPorId(id).orElse(null);
     if (voluntario != null) {
         voluntario.setEstado("Aprobado");
@@ -193,8 +294,9 @@ public String aprobarVoluntario(@PathVariable String id) {
 }
 
 // 🔹 Rechazar voluntario
-@PostMapping("/voluntarios/rechazar/{id}")
-public String rechazarVoluntario(@PathVariable String id) {
+    @PostMapping("/voluntarios/rechazar/{id}")
+public String rechazarVoluntario(
+        @PathVariable("id") String id) {
     Voluntario voluntario = voluntarioService.obtenerPorId(id).orElse(null);
     if (voluntario != null) {
         voluntario.setEstado("Rechazado");
@@ -204,8 +306,9 @@ public String rechazarVoluntario(@PathVariable String id) {
     return "redirect:/proyectos/todos";
 }
 
-@PostMapping("/voluntarios/eliminar/{id}")
-public String eliminarVoluntario(@PathVariable String id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/voluntarios/eliminar/{id}")
+public String eliminarVoluntario(
+        @PathVariable("id") String id, RedirectAttributes redirectAttributes) {
     try {
         // Busca el voluntario por ID
         Optional<Voluntario> voluntarioOpt = voluntarioRepository.findById(id);
@@ -230,7 +333,9 @@ public String eliminarVoluntario(@PathVariable String id, RedirectAttributes red
 
     // 🔹 Agregar voluntario a proyecto
     @PostMapping("/agregar-voluntario")
-    public String agregarVoluntario(@RequestParam String proyectoId, @RequestParam String usuarioId, Model model) {
+public String agregarVoluntario(
+        @RequestParam("proyectoId") String proyectoId,
+        @RequestParam("usuarioId") String usuarioId, Model model) {
         Proyecto proyecto = proyectoService.obtenerPorId(proyectoId).orElse(null);
         if (proyecto == null) {
             model.addAttribute("error", "Proyecto no encontrado");
@@ -258,48 +363,418 @@ public String eliminarVoluntario(@PathVariable String id, RedirectAttributes red
     }
 
     // 🔹 Listar todos los proyectos
-    @GetMapping("/todos")
-public String listarTodosLosProyectos(@RequestParam(required = false) String nombre,
-                                      Model model,
-                                      HttpSession session) {
-    // ✅ 1. Refrescar usuario logueado desde la base de datos
-    Usuario usuarioSesion = (Usuario) session.getAttribute("usuarioLogueado");
+   @GetMapping("/todos")
+public String listarTodosLosProyectos(
+
+        @RequestParam(name = "busqueda", required = false)
+        String busqueda,
+
+        @RequestParam(name = "filtro", required = false)
+        String filtro,
+
+        @RequestParam(name = "orden", required = false)
+        String orden,
+
+        Model model,
+        HttpSession session) {
+
+    // ✅ Usuario sesión
+    Usuario usuarioSesion =
+            (Usuario) session.getAttribute("usuarioLogueado");
+
     if (usuarioSesion != null) {
-        Usuario usuarioActualizado = usuarioRepository.findById(usuarioSesion.getId()).orElse(usuarioSesion);
-        session.setAttribute("usuarioLogueado", usuarioActualizado);
-        model.addAttribute("usuario", usuarioActualizado);
+
+        Usuario usuarioActualizado =
+                usuarioRepository
+                .findById(usuarioSesion.getId())
+                .orElse(usuarioSesion);
+
+        session.setAttribute(
+                "usuarioLogueado",
+                usuarioActualizado
+        );
+
+        model.addAttribute(
+                "usuario",
+                usuarioActualizado
+        );
     }
 
-    // ✅ 2. Obtener proyectos
-    List<Proyecto> proyectos = (nombre != null && !nombre.trim().isEmpty())
-            ? proyectoService.buscarPorNombre(nombre)
-            : proyectoService.obtenerTodos();
+    // ✅ Obtener todos los proyectos
+    List<Proyecto> proyectos =
+            proyectoService.obtenerTodos();
 
-    Map<String, String> fundacionIdANombre = new HashMap<>();
-    Map<String, String> fundacionIdALogo = new HashMap<>();
+    // ✅ Buscar por proyecto o fundación
+    if (busqueda != null &&
+        !busqueda.trim().isEmpty()) {
 
-    // ✅ 3. Asociar fundaciones con sus logos/nombres
+        String texto =
+                busqueda.toLowerCase();
+
+        proyectos = proyectos.stream()
+                .filter(proyecto -> {
+
+                    boolean coincideProyecto =
+                            proyecto.getNombre() != null &&
+                            proyecto.getNombre()
+                            .toLowerCase()
+                            .contains(texto);
+
+                    boolean coincideFundacion =
+                            fundacionRepository
+                            .findById(proyecto.getFundacionId())
+                            .map(f ->
+                                f.getNombre() != null &&
+                                f.getNombre()
+                                .toLowerCase()
+                                .contains(texto)
+                            )
+                            .orElse(false);
+
+                    return coincideProyecto
+                            || coincideFundacion;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // ✅ ORDENAMIENTO AUTOMÁTICO
+    if (orden != null &&
+        !orden.isEmpty()) {
+
+        switch (orden) {
+
+            case "masReciente":
+
+                proyectos.sort((a, b) ->
+                        b.getFechaInicio()
+                        .compareTo(a.getFechaInicio()));
+
+                break;
+
+            case "masDonaciones":
+
+                proyectos.sort((a, b) -> {
+
+                    BigDecimal totalA =
+                            donacionRepository
+                            .findByProyectoId(a.getId())
+                            .stream()
+                            .filter(d ->
+                                    "APROBADA"
+                                    .equalsIgnoreCase(d.getEstado()))
+                            .map(Donacion::getMonto)
+                            .reduce(BigDecimal.ZERO,
+                                    BigDecimal::add);
+
+                    BigDecimal totalB =
+                            donacionRepository
+                            .findByProyectoId(b.getId())
+                            .stream()
+                            .filter(d ->
+                                    "APROBADA"
+                                    .equalsIgnoreCase(d.getEstado()))
+                            .map(Donacion::getMonto)
+                            .reduce(BigDecimal.ZERO,
+                                    BigDecimal::add);
+
+                    return totalB.compareTo(totalA);
+                });
+
+                break;
+
+            case "masVoluntarios":
+
+                proyectos.sort((a, b) -> {
+
+                    long totalA =
+                            voluntarioRepository
+                            .findByProyectoId(a.getId())
+                            .stream()
+                            .filter(v ->
+                                    "Aprobado"
+                                    .equalsIgnoreCase(v.getEstado()))
+                            .count();
+
+                    long totalB =
+                            voluntarioRepository
+                            .findByProyectoId(b.getId())
+                            .stream()
+                            .filter(v ->
+                                    "Aprobado"
+                                    .equalsIgnoreCase(v.getEstado()))
+                            .count();
+
+                    return Long.compare(totalB, totalA);
+                });
+
+                break;
+        }
+    }
+
+    // ✅ FILTROS ESPECIALES
+    if (filtro != null &&
+        !filtro.isEmpty() &&
+        !proyectos.isEmpty()) {
+
+        Proyecto proyectoResultado = null;
+
+        switch (filtro) {
+
+            case "masDonaciones":
+
+                proyectoResultado =
+                        proyectos.stream()
+                        .max((p1, p2) -> {
+
+                            BigDecimal total1 =
+                                    donacionRepository
+                                    .findByProyectoId(p1.getId())
+                                    .stream()
+                                    .filter(d ->
+                                            "APROBADA"
+                                            .equalsIgnoreCase(d.getEstado()))
+                                    .map(Donacion::getMonto)
+                                    .reduce(BigDecimal.ZERO,
+                                            BigDecimal::add);
+
+                            BigDecimal total2 =
+                                    donacionRepository
+                                    .findByProyectoId(p2.getId())
+                                    .stream()
+                                    .filter(d ->
+                                            "APROBADA"
+                                            .equalsIgnoreCase(d.getEstado()))
+                                    .map(Donacion::getMonto)
+                                    .reduce(BigDecimal.ZERO,
+                                            BigDecimal::add);
+
+                            return total1.compareTo(total2);
+                        })
+                        .orElse(null);
+
+                break;
+
+            case "menosDonaciones":
+
+                proyectoResultado =
+                        proyectos.stream()
+                        .min((p1, p2) -> {
+
+                            BigDecimal total1 =
+                                    donacionRepository
+                                    .findByProyectoId(p1.getId())
+                                    .stream()
+                                    .filter(d ->
+                                            "APROBADA"
+                                            .equalsIgnoreCase(d.getEstado()))
+                                    .map(Donacion::getMonto)
+                                    .reduce(BigDecimal.ZERO,
+                                            BigDecimal::add);
+
+                            BigDecimal total2 =
+                                    donacionRepository
+                                    .findByProyectoId(p2.getId())
+                                    .stream()
+                                    .filter(d ->
+                                            "APROBADA"
+                                            .equalsIgnoreCase(d.getEstado()))
+                                    .map(Donacion::getMonto)
+                                    .reduce(BigDecimal.ZERO,
+                                            BigDecimal::add);
+
+                            return total1.compareTo(total2);
+                        })
+                        .orElse(null);
+
+                break;
+
+            case "masVoluntarios":
+
+                proyectoResultado =
+                        proyectos.stream()
+                        .max((p1, p2) -> {
+
+                            long total1 =
+                                    voluntarioRepository
+                                    .findByProyectoId(p1.getId())
+                                    .stream()
+                                    .filter(v ->
+                                            "Aprobado"
+                                            .equalsIgnoreCase(v.getEstado()))
+                                    .count();
+
+                            long total2 =
+                                    voluntarioRepository
+                                    .findByProyectoId(p2.getId())
+                                    .stream()
+                                    .filter(v ->
+                                            "Aprobado"
+                                            .equalsIgnoreCase(v.getEstado()))
+                                    .count();
+
+                            return Long.compare(total1, total2);
+                        })
+                        .orElse(null);
+
+                break;
+
+            case "menosVoluntarios":
+
+                proyectoResultado =
+                        proyectos.stream()
+                        .min((p1, p2) -> {
+
+                            long total1 =
+                                    voluntarioRepository
+                                    .findByProyectoId(p1.getId())
+                                    .stream()
+                                    .filter(v ->
+                                            "Aprobado"
+                                            .equalsIgnoreCase(v.getEstado()))
+                                    .count();
+
+                            long total2 =
+                                    voluntarioRepository
+                                    .findByProyectoId(p2.getId())
+                                    .stream()
+                                    .filter(v ->
+                                            "Aprobado"
+                                            .equalsIgnoreCase(v.getEstado()))
+                                    .count();
+
+                            return Long.compare(total1, total2);
+                        })
+                        .orElse(null);
+
+                break;
+        }
+
+        if (proyectoResultado != null) {
+
+            proyectos = List.of(proyectoResultado);
+
+        } else {
+
+            proyectos = new ArrayList<>();
+        }
+    }
+
+    // ✅ MAPAS
+    Map<String, String> fundacionIdANombre =
+            new HashMap<>();
+
+    Map<String, String> fundacionIdALogo =
+            new HashMap<>();
+
+    Map<String, BigDecimal> dineroPorProyecto =
+            new HashMap<>();
+
+    Map<String, Integer> voluntariosPorProyecto =
+            new HashMap<>();
+
+    // ✅ RECORRER PROYECTOS
     for (Proyecto proyecto : proyectos) {
-        fundacionRepository.findById(proyecto.getFundacionId()).ifPresent(f -> {
-            fundacionIdANombre.put(proyecto.getFundacionId(), f.getNombre());
-            if (f.getLogo() != null && f.getLogo().length > 0) {
-                String logoBase64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(f.getLogo());
-                fundacionIdALogo.put(proyecto.getFundacionId(), logoBase64);
-            } else {
-                fundacionIdALogo.put(proyecto.getFundacionId(), "/img/logo_fundacion_default.png");
-            }
-        });
+
+        // 🔹 Fundación
+        fundacionRepository
+                .findById(proyecto.getFundacionId())
+                .ifPresent(f -> {
+
+                    fundacionIdANombre.put(
+                            proyecto.getFundacionId(),
+                            f.getNombre()
+                    );
+
+                    if (f.getLogo() != null &&
+                        !f.getLogo().isEmpty()) {
+
+                        fundacionIdALogo.put(
+                                proyecto.getFundacionId(),
+                                "/uploads/logos/" + f.getLogo()
+                        );
+
+                    } else {
+
+                        fundacionIdALogo.put(
+                                proyecto.getFundacionId(),
+                                "/img/logo_fundacion_default.png"
+                        );
+                    }
+                });
+
+        // 🔹 Donaciones aprobadas
+        BigDecimal totalDonaciones =
+                donacionRepository
+                .findByProyectoId(proyecto.getId())
+                .stream()
+                .filter(d ->
+                        "APROBADA"
+                        .equalsIgnoreCase(d.getEstado()))
+                .map(Donacion::getMonto)
+                .reduce(BigDecimal.ZERO,
+                        BigDecimal::add);
+
+        dineroPorProyecto.put(
+                proyecto.getId(),
+                totalDonaciones
+        );
+
+        // 🔹 Voluntarios aprobados
+        int totalVoluntarios =
+                (int) voluntarioRepository
+                .findByProyectoId(proyecto.getId())
+                .stream()
+                .filter(v ->
+                        "Aprobado"
+                        .equalsIgnoreCase(v.getEstado()))
+                .count();
+
+        voluntariosPorProyecto.put(
+                proyecto.getId(),
+                totalVoluntarios
+        );
     }
 
-    // ✅ 4. Pasar todo al modelo
+    // ✅ ENVIAR DATOS
     model.addAttribute("proyectos", proyectos);
-    model.addAttribute("nombre", nombre);
-    model.addAttribute("fundacionIdANombre", fundacionIdANombre);
-    model.addAttribute("fundacionIdALogo", fundacionIdALogo);
+
+    model.addAttribute(
+            "fundacionIdANombre",
+            fundacionIdANombre
+    );
+
+    model.addAttribute(
+            "fundacionIdALogo",
+            fundacionIdALogo
+    );
+
+    model.addAttribute(
+            "dineroPorProyecto",
+            dineroPorProyecto
+    );
+
+    model.addAttribute(
+            "voluntariosPorProyecto",
+            voluntariosPorProyecto
+    );
+
+    model.addAttribute(
+            "busqueda",
+            busqueda
+    );
+
+    model.addAttribute(
+            "filtro",
+            filtro
+    );
+
+    model.addAttribute(
+            "orden",
+            orden
+    );
 
     return "lista_todos_proyectos";
 }
-
 
     // 🔹 Convertir Voluntario → DTO
     private VoluntarioDTO convertirADTO(Voluntario voluntario) {

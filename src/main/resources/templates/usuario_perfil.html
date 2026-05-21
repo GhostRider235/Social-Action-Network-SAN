@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Usuario</title>
+
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+<div class="particles"></div>
+
+<header class="navbar">
+    <div class="logo">
+        <i class='bx bx-user'></i>
+        <span>Mi Perfil</span>
+    </div>
+
+    <div class="nav-right">
+        <a th:href="@{/usuario/dashboard}" class="nav-btn">
+            <i class='bx bx-home'></i>
+            Dashboard
+        </a>
+
+        <a th:href="@{/logout}" class="nav-btn logout">
+            <i class='bx bx-log-out'></i>
+            Salir
+        </a>
+    </div>
+</header>
+
+<section class="profile-container fade-up">
+
+    <div class="profile-card">
+
+        <div class="profile-image">
+            <i class='bx bx-user'></i>
+        </div>
+
+        <h1 th:text="${usuario.nombre}"></h1>
+
+        <p class="role">
+            Usuario de la plataforma
+        </p>
+
+        <div class="profile-info">
+
+            <div class="info-item">
+                <span>Email</span>
+                <strong th:text="${usuario.email}"></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Teléfono</span>
+                <strong th:text="${usuario.telefono}"></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Saldo</span>
+                <strong>$<span th:text="${usuario.saldo}"></span></strong>
+            </div>
+
+            <div class="info-item">
+                <span>Rol</span>
+                <strong th:text="${usuario.rol}"></strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script th:src="@{/js/usuario.js}"></script>
+
+</body>
+</html>

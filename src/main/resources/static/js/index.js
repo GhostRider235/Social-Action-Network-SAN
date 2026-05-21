@@ -1,107 +1,176 @@
-// ===== MENU =====
+// ================= MENU =================
+
 document.addEventListener("DOMContentLoaded", () => {
-  const menuButton = document.getElementById("menu-toggle");
-  const nav = document.getElementById("main-nav");
 
-  if (menuButton) {
-    menuButton.addEventListener("click", () => {
-      nav.classList.toggle("active");
-    });
-  }
+    const menuButton = document.getElementById("menu-toggle");
+    const nav = document.getElementById("main-nav");
 
-  // ENTER para enviar mensaje
-  const input = document.getElementById("inputMensaje");
-  if (input) {
-    input.addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        enviarMensaje();
-      }
-    });
-  }
+    if (menuButton) {
+        menuButton.addEventListener("click", () => {
+            nav.classList.toggle("active");
+        });
+    }
+
+    // ENTER para enviar mensaje
+    const input = document.getElementById("inputMensaje");
+
+    if (input) {
+        input.addEventListener("keypress", function(e) {
+
+            if (e.key === "Enter") {
+                enviarMensaje();
+            }
+
+        });
+    }
+
 });
 
-// ===== CHATBOT =====
+// ================= CHATBOT =================
+
 let chatAbierto = false;
 
 function toggleChat() {
+
     const chat = document.getElementById("chat-window");
+
     chatAbierto = !chatAbierto;
+
     chat.style.display = chatAbierto ? "flex" : "none";
 }
 
-function enviarMensaje() {
-    let input = document.getElementById("inputMensaje");
-    let mensaje = input.value.trim();
+// ================= ENVIAR MENSAJE =================
+
+async function enviarMensaje() {
+
+    const input = document.getElementById("inputMensaje");
+
+    const mensaje = input.value.trim();
+
+    const usuario =
+        document.getElementById("usuarioActual").value;
 
     if (!mensaje) return;
 
-    let mensajesDiv = document.getElementById("mensajes");
+    const mensajesDiv =
+        document.getElementById("mensajes");
 
-    // Mensaje del usuario
+    // ================= MENSAJE USUARIO =================
+
     mensajesDiv.innerHTML += `
-        <div class="mensaje usuario">${mensaje}</div>
+        <div class="mensaje usuario">
+            ${escapeHTML(mensaje)}
+        </div>
     `;
 
     input.value = "";
-    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
 
-    // Indicador "escribiendo..."
-    let typing = document.createElement("div");
-    typing.className = "mensaje ia";
-    typing.innerText = "Escribiendo...";
+    scrollChat();
+
+    // ================= LOADER =================
+
+    const typing = document.createElement("div");
+
+    typing.className = "mensaje ia typing";
+
+    typing.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+
     mensajesDiv.appendChild(typing);
 
-    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+    scrollChat();
 
-    // PETICIÓN AL BACKEND
-    fetch("/chat", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            usuario: "usuario1",
-            contenido: mensaje
-        })
-    })
-    .then(res => {
-        if (!res.ok) {
+    try {
+
+        // ================= FETCH =================
+
+        const response = await fetch("/chat", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                usuario: usuario,
+                contenido: mensaje
+            })
+
+        });
+
+        if (!response.ok) {
             throw new Error("Error del servidor");
         }
-        return res.json(); 
-    })
-    .then(data => {
+
+        const data = await response.json();
+
         typing.remove();
 
-        // Tomar la última respuesta del chatbot
-        let ultimaRespuesta = data[data.length - 1];
+        // ================= RESPUESTA IA =================
 
-        if (!ultimaRespuesta || !ultimaRespuesta.contenido) {
+        const ultimaRespuesta = data[data.length - 1];
+
+        if (!ultimaRespuesta ||
+            !ultimaRespuesta.contenido) {
+
             mensajesDiv.innerHTML += `
-                <div class="mensaje ia">
-                    🤖 No pude generar respuesta.
+                <div class="mensaje ia error">
+                    🤖 No pude generar una respuesta.
                 </div>
             `;
+
         } else {
+
             mensajesDiv.innerHTML += `
                 <div class="mensaje ia">
-                    ${ultimaRespuesta.contenido}
+                    ${marked.parse(
+                        escapeHTML(
+                            ultimaRespuesta.contenido
+                        )
+                    )}
                 </div>
             `;
         }
 
-        mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-    })
-    .catch(error => {
+        scrollChat();
+
+    } catch (error) {
+
         typing.remove();
 
         mensajesDiv.innerHTML += `
             <div class="mensaje ia error">
-                ⚠️ Error al conectar con el servidor
+                ⚠️ Error al conectar con el servidor.
             </div>
         `;
 
-        console.error("Error:", error);
-        mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-    });
+        console.error(error);
+
+        scrollChat();
+    }
+}
+
+// ================= AUTOSCROLL =================
+
+function scrollChat() {
+
+    const chatBody =
+        document.getElementById("chat-body");
+
+    chatBody.scrollTop =
+        chatBody.scrollHeight;
+}
+
+// ================= SEGURIDAD =================
+
+function escapeHTML(text) {
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
 }
